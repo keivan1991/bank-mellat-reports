@@ -264,17 +264,24 @@ updateActivities();
 }
 
 function updateActivities(){
-let periodic=$("visitType").value==="ادواری";
-let equipment=$("equipment").value;
-let camera=equipment.includes("دوربین");
-let alarm=equipment.includes("دزدگیر");
+    const periodic = $("visitType").value === "ادواری";
+    const equipment = $("equipment").value;
 
-$("activityArea").classList.toggle("hidden",periodic);
-$("cameraBlock").classList.toggle("hidden",!camera);
-$("alarmBlock").classList.toggle("hidden",!alarm);
-$("otherLabel").classList.toggle("hidden",periodic);
-$("otherActivity").classList.toggle("hidden",periodic);
-$("expertBlock").classList.toggle("hidden",!camera);
+    const camera = equipment.includes("دوربین");
+    const alarm = equipment.includes("دزدگیر");
+
+    // مراجعه ادواری: مخفی شدن کامل فعالیت‌ها
+    $("activityArea").classList.toggle("hidden", periodic);
+
+    // مراجعه موردی: نمایش فعالیت متناسب با تجهیزات
+    $("cameraBlock").classList.toggle("hidden", periodic || !camera);
+    $("alarmBlock").classList.toggle("hidden", periodic || !alarm);
+
+    $("otherLabel").classList.toggle("hidden", periodic);
+    $("otherActivity").classList.toggle("hidden", periodic);
+
+    // اطلاعات کارشناس فقط برای دوربین
+    $("expertBlock").classList.toggle("hidden", !camera);
 }
 
 function toggleOtherExpert(){
