@@ -93,7 +93,7 @@ textarea{min-height:85px;resize:vertical}
 <div class="row">
 <div>
 <label>تاریخ مراجعه شمسی</label>
-<input id="visitDate" class="date-input" readonly placeholder="انتخاب تاریخ" onclick="openJalaliPicker('visitDate')">
+<input id="visitDate" class="date-input" type="text" readonly placeholder="انتخاب تاریخ" onclick="openJalaliPicker('visitDate')" onfocus="openJalaliPicker('visitDate')">
 </div>
 <div>
 <label>نام ثبت‌کننده</label>
@@ -185,11 +185,11 @@ textarea{min-height:85px;resize:vertical}
 <div class="row">
 <div>
 <label>از تاریخ شمسی</label>
-<input id="filterFrom" class="date-input" readonly placeholder="انتخاب تاریخ" onclick="openJalaliPicker('filterFrom')">
+<input id="filterFrom" class="date-input" type="text" readonly placeholder="انتخاب تاریخ" onclick="openJalaliPicker('filterFrom')" onfocus="openJalaliPicker('filterFrom')">
 </div>
 <div>
 <label>تا تاریخ شمسی</label>
-<input id="filterTo" class="date-input" readonly placeholder="انتخاب تاریخ" onclick="openJalaliPicker('filterTo')">
+<input id="filterTo" class="date-input" type="text" readonly placeholder="انتخاب تاریخ" onclick="openJalaliPicker('filterTo')" onfocus="openJalaliPicker('filterTo')">
 </div>
 </div>
 
@@ -256,14 +256,14 @@ textarea{min-height:85px;resize:vertical}
 <div id="calendarOverlay" class="hidden" onclick="closeJalaliPicker()"></div>
 <div id="jalaliPicker" class="hidden">
  <div class="calendar-head">
-  <button onclick="changeJalaliMonth(-1)">ماه قبل</button>
+  <button type="button" onclick="changeJalaliMonth(-1)">ماه قبل</button>
   <div class="calendar-title" id="calendarTitle"></div>
-  <button onclick="changeJalaliMonth(1)">ماه بعد</button>
+  <button type="button" onclick="changeJalaliMonth(1)">ماه بعد</button>
  </div>
  <div class="calendar-grid" id="calendarGrid"></div>
  <div class="calendar-footer">
-  <button onclick="selectToday()">امروز</button>
-  <button onclick="closeJalaliPicker()">بستن</button>
+  <button type="button" onclick="selectToday()">امروز</button>
+  <button type="button" onclick="closeJalaliPicker()">بستن</button>
  </div>
 </div>
 
@@ -338,9 +338,19 @@ const jalaliFormatter=new Intl.DateTimeFormat("en-u-ca-persian-nu-latn",{
   year:"numeric",month:"numeric",day:"numeric",timeZone:"UTC"
 });
 
+/* تبدیل ارقام فارسی و عربی به انگلیسی */
+function toEnglishDigits(value){
+  return String(value)
+    .replace(/[۰-۹]/g,d=>"۰۱۲۳۴۵۶۷۸۹".indexOf(d))
+    .replace(/[٠-٩]/g,d=>"٠١٢٣٤٥٦٧٨٩".indexOf(d));
+}
+
 function jalaliPartsFromGregorian(date){
   const parts=jalaliFormatter.formatToParts(date);
-  const get=t=>Number(parts.find(p=>p.type===t).value);
+  const get=t=>{
+    const part=parts.find(p=>p.type===t);
+    return part?Number(toEnglishDigits(part.value)):NaN;
+  };
   return {y:get("year"),m:get("month"),d:get("day")};
 }
 
@@ -379,18 +389,23 @@ function firstGregorianDayOfJalaliMonth(y,m){
 function jalaliMonthLength(y,m){
   const first=firstGregorianDayOfJalaliMonth(y,m);
   if(!first)return 30;
+
   let nextYear=y,nextMonth=m+1;
   if(nextMonth===13){nextMonth=1;nextYear++;}
+
   const next=firstGregorianDayOfJalaliMonth(nextYear,nextMonth);
   if(!next)return m<=6?31:30;
+
   return Math.round((next.getTime()-first.getTime())/86400000);
 }
 
 function jalaliToGregorianISO(value){
   const p=typeof value==="string"?parseJalali(value):value;
   if(!p)return "";
+
   const first=firstGregorianDayOfJalaliMonth(p.y,p.m);
   if(!first)return "";
+
   const date=new Date(first.getTime()+(p.d-1)*86400000);
   return date.toISOString().slice(0,10);
 }
@@ -398,6 +413,7 @@ function jalaliToGregorianISO(value){
 function normalizeDate(value){
   if(!value)return "";
   if(/^\d{4}-\d{2}-\d{2}$/.test(value))return gregorianToJalali(value);
+
   const p=parseJalali(value);
   return p?jalaliString(p.y,p.m,p.d):"";
 }
@@ -420,11 +436,19 @@ function formatDate(value){
 /* تقویم انتخاب تاریخ */
 
 function openJalaliPicker(targetId){
+  const target=$(targetId);
+  if(!target)return;
+
   calendarTarget=targetId;
-  const current=parseJalali($(targetId).value)||parseJalali(todayJalali());
+
+  const current=parseJalali(target.value)||parseJalali(todayJalali());
+  if(!current)return;
+
   calendarYear=current.y;
   calendarMonth=current.m;
+
   renderJalaliCalendar();
+
   $("calendarOverlay").classList.remove("hidden");
   $("jalaliPicker").classList.remove("hidden");
 }
@@ -437,51 +461,86 @@ function closeJalaliPicker(){
 
 function changeJalaliMonth(amount){
   calendarMonth+=amount;
-  if(calendarMonth>12){calendarMonth=1;calendarYear++;}
-  if(calendarMonth<1){calendarMonth=12;calendarYear--;}
+
+  if(calendarMonth>12){
+    calendarMonth=1;
+    calendarYear++;
+  }
+
+  if(calendarMonth<1){
+    calendarMonth=12;
+    calendarYear--;
+  }
+
   renderJalaliCalendar();
 }
 
 function renderJalaliCalendar(){
   const months=["فروردین","اردیبهشت","خرداد","تیر","مرداد","شهریور","مهر","آبان","آذر","دی","بهمن","اسفند"];
   const weekdays=["شنبه","یکشنبه","دوشنبه","سه‌شنبه","چهارشنبه","پنجشنبه","جمعه"];
+
   $("calendarTitle").textContent=months[calendarMonth-1]+" "+toPersian(calendarYear);
 
   const grid=$("calendarGrid");
   grid.innerHTML=weekdays.map(x=>`<div class="calendar-weekday">${x}</div>`).join("");
 
   const first=firstGregorianDayOfJalaliMonth(calendarYear,calendarMonth);
-  if(!first)return;
+
+  if(!first){
+    grid.innerHTML+='<div style="grid-column:1/-1;text-align:center;padding:15px">خطا در ساخت تقویم</div>';
+    return;
+  }
 
   const offset=(first.getUTCDay()+1)%7;
   const length=jalaliMonthLength(calendarYear,calendarMonth);
-  const selected=parseJalali($(calendarTarget).value);
+
+  const selected=calendarTarget?parseJalali($(calendarTarget).value):null;
   const today=parseJalali(todayJalali());
 
-  for(let i=0;i<offset;i++)grid.innerHTML+='<div></div>';
+  for(let i=0;i<offset;i++){
+    const blank=document.createElement("div");
+    grid.appendChild(blank);
+  }
 
   for(let day=1;day<=length;day++){
     const isSelected=selected&&selected.y===calendarYear&&selected.m===calendarMonth&&selected.d===day;
     const isToday=today&&today.y===calendarYear&&today.m===calendarMonth&&today.d===day;
+
     const classes=["calendar-day",isSelected?"selected":"",isToday?"today":""].filter(Boolean).join(" ");
+
     const btn=document.createElement("button");
     btn.type="button";
     btn.className=classes;
     btn.textContent=toPersian(day);
     btn.onclick=()=>chooseJalaliDay(day);
+
     grid.appendChild(btn);
   }
 }
 
 function chooseJalaliDay(day){
   if(!calendarTarget)return;
-  $(calendarTarget).value=jalaliString(calendarYear,calendarMonth,day);
+
+  /* شناسه فیلد را قبل از بستن تقویم نگه می‌داریم */
+  const target=calendarTarget;
+
+  const input=$(target);
+  if(!input)return;
+
+  input.value=jalaliString(calendarYear,calendarMonth,day);
+
   closeJalaliPicker();
-  if(calendarTarget==="filterFrom"||calendarTarget==="filterTo")renderReports();
+
+  /* به‌روزرسانی فیلتر بعد از انتخاب تاریخ */
+  if(target==="filterFrom"||target==="filterTo"){
+    renderReports();
+  }
 }
 
 function selectToday(){
   const p=parseJalali(todayJalali());
+  if(!p)return;
+
   calendarYear=p.y;
   calendarMonth=p.m;
   chooseJalaliDay(p.d);
@@ -494,7 +553,9 @@ function loadReports(){
     const data=JSON.parse(localStorage.getItem(STORAGE_KEY)||"[]");
     reports=Array.isArray(data)?data:[];
     reports=reports.map(r=>({...r,date:normalizeDate(r.date)}));
-  }catch(e){reports=[];}
+  }catch(e){
+    reports=[];
+  }
 }
 
 function saveReportsToStorage(){
@@ -564,13 +625,17 @@ function searchCenters(){
     `<option value="${x.i}">${escapeHtml(x.c[0])} ${escapeHtml(x.c[1])}${x.c[2]?" ـ کد "+escapeHtml(x.c[2]):""}</option>`
   ).join("");
 
-  if(matches.some(x=>String(x.i)===oldValue))select.value=oldValue;
+  if(matches.some(x=>String(x.i)===oldValue)){
+    select.value=oldValue;
+  }
+
   $("centerSearchInfo").textContent=toPersian(matches.length)+" مرکز پیدا شد";
 }
 
 function centerSelected(){
   const c=centers[Number($("center").value)];
   if(!c)return;
+
   $("centerSearch").value=c[0]+" "+c[1];
   $("centerSearchInfo").textContent="مرکز انتخاب شد";
 }
@@ -588,15 +653,19 @@ function resetForm(){
   $("visitDate").value=todayJalali();
   $("worker").value=$("defaultWorker").value;
   $("centerSearch").value="";
+
   searchCenters();
   $("center").value="0";
+
   $("visitType").value="ادواری";
   $("equipment").value="دوربین";
   $("notes").value="";
   $("otherActivity").value="";
   $("expert").value="یادگار";
   $("otherExpert").value="";
+
   document.querySelectorAll(".checks input").forEach(x=>x.checked=false);
+
   toggleOtherExpert();
   updateActivities();
 }
@@ -631,14 +700,26 @@ function setSelected(id,values){
 function collectFormData(){
   const rawDate=$("visitDate").value;
   const date=normalizeDate(rawDate);
-  if(!date){alert("تاریخ مراجعه را انتخاب کن.");return null;}
+
+  if(!date){
+    alert("تاریخ مراجعه را انتخاب کن.");
+    return null;
+  }
 
   const worker=$("worker").value.trim();
-  if(!worker){alert("نام ثبت‌کننده را وارد کن.");return null;}
+
+  if(!worker){
+    alert("نام ثبت‌کننده را وارد کن.");
+    return null;
+  }
 
   const centerIndex=Number($("center").value);
   const c=centers[centerIndex];
-  if(!c){alert("لطفاً یک مرکز را از فهرست نتایج انتخاب کن.");return null;}
+
+  if(!c){
+    alert("لطفاً یک مرکز را از فهرست نتایج انتخاب کن.");
+    return null;
+  }
 
   const equipment=$("equipment").value;
   const visitType=$("visitType").value;
@@ -653,6 +734,7 @@ function collectFormData(){
       cameraActivities=selected("cameraActivities");
       activities.push(...cameraActivities);
     }
+
     if(equipment.includes("دزدگیر")){
       alarmActivities=selected("alarmActivities");
       activities.push(...alarmActivities);
@@ -665,16 +747,26 @@ function collectFormData(){
 
     if(activities.includes("سایر موارد")){
       const other=$("otherActivity").value.trim();
-      if(!other){alert("عنوان سایر موارد را وارد کن.");return null;}
+
+      if(!other){
+        alert("عنوان سایر موارد را وارد کن.");
+        return null;
+      }
+
       activities=activities.filter(x=>x!=="سایر موارد");
       activities.push("سایر موارد: "+other);
     }
   }
 
   let expert="";
+
   if(equipment.includes("دوربین")){
     expert=$("expert").value==="other"?$("otherExpert").value.trim():$("expert").value;
-    if(!expert){alert("نام کارشناس را وارد کن.");return null;}
+
+    if(!expert){
+      alert("نام کارشناس را وارد کن.");
+      return null;
+    }
   }
 
   return {
@@ -704,27 +796,41 @@ function makeReportText(data){
     data.visitType+" "+data.equipment
   ];
 
-  if(data.visitType!=="ادواری"&&data.activities.length)lines.push(data.activities.join("، "));
-  if(data.equipment.includes("دوربین"))lines.push("تایید توسط آقای "+data.expert);
-  if(data.notes)lines.push("توضیحات: "+data.notes);
+  if(data.visitType!=="ادواری"&&data.activities.length){
+    lines.push(data.activities.join("، "));
+  }
+
+  if(data.equipment.includes("دوربین")){
+    lines.push("تایید توسط آقای "+data.expert);
+  }
+
+  if(data.notes){
+    lines.push("توضیحات: "+data.notes);
+  }
+
   return lines.join("\n");
 }
 
 function previewReport(){
   const data=collectFormData();
   if(!data)return;
+
   currentDraftData=data;
   draft=makeReportText(data);
+
   $("previewText").textContent=draft;
   show("preview");
 }
 
 async function copyReport(){
   if(!draft)return;
+
   try{
     await navigator.clipboard.writeText(draft);
     alert("گزارش کپی شد.");
-  }catch(e){fallbackCopy(draft);}
+  }catch(e){
+    fallbackCopy(draft);
+  }
 }
 
 function fallbackCopy(text){
@@ -732,10 +838,14 @@ function fallbackCopy(text){
   area.value=text;
   document.body.appendChild(area);
   area.select();
+
   try{
     document.execCommand("copy");
     alert("گزارش کپی شد.");
-  }catch(e){alert("کپی خودکار ممکن نشد.");}
+  }catch(e){
+    alert("کپی خودکار ممکن نشد.");
+  }
+
   area.remove();
 }
 
@@ -757,6 +867,7 @@ function saveReport(){
   $("editId").value="";
   alert(index>=0?"گزارش ویرایش و ذخیره شد.":"گزارش ذخیره شد.");
   $("settingsReportCount").textContent=reports.length;
+
   show("reports");
   renderReports();
 }
@@ -769,6 +880,7 @@ function clearReportFilters(render=true){
   $("filterTo").value="";
   $("filterType").value="";
   $("filterEquipment").value="";
+
   if(render)renderReports();
 }
 
@@ -781,6 +893,7 @@ function getFilteredReports(){
 
   return reports.filter(r=>{
     const date=normalizeDate(r.date||"");
+
     if(from&&date<from)return false;
     if(to&&date>to)return false;
     if(type&&(r.visitType||"")!==type)return false;
@@ -790,11 +903,14 @@ function getFilteredReports(){
       const content=normalizeText((r.center||"")+" "+(r.text||"")+" "+(r.worker||""));
       if(!content.includes(search))return false;
     }
+
     return true;
   }).sort((a,b)=>{
     const da=normalizeDate(a.date||"");
     const db=normalizeDate(b.date||"");
+
     if(db!==da)return db.localeCompare(da);
+
     return String(b.id||"").localeCompare(String(a.id||""));
   });
 }
@@ -809,6 +925,7 @@ function renderReports(){
   $("specialReports").textContent=toPersian(special);
 
   const list=getFilteredReports();
+
   $("filteredCount").textContent="نمایش "+toPersian(list.length)+" گزارش از "+toPersian(total)+" گزارش";
 
   if(!list.length){
@@ -838,7 +955,11 @@ function renderReports(){
 
 function escapeHtml(s){
   return String(s??"").replace(/[&<>"']/g,c=>({
-    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+    "&":"&amp;",
+    "<":"&lt;",
+    ">":"&gt;",
+    '"':"&quot;",
+    "'":"&#39;"
   }[c]));
 }
 
@@ -847,8 +968,10 @@ function escapeHtml(s){
 $("reportList").addEventListener("click",function(event){
   const button=event.target.closest("button[data-action]");
   if(!button)return;
+
   const id=button.dataset.id;
   const action=button.dataset.action;
+
   if(action==="copy")copySaved(id);
   if(action==="edit")editReport(id);
   if(action==="delete")deleteReport(id);
@@ -857,24 +980,32 @@ $("reportList").addEventListener("click",function(event){
 async function copySaved(id){
   const r=reports.find(x=>String(x.id)===String(id));
   if(!r)return;
+
   try{
     await navigator.clipboard.writeText(r.text||"");
     alert("گزارش کپی شد.");
-  }catch(e){fallbackCopy(r.text||"");}
+  }catch(e){
+    fallbackCopy(r.text||"");
+  }
 }
 
 function deleteReport(id){
   const r=reports.find(x=>String(x.id)===String(id));
   if(!r)return;
+
   if(!confirm("گزارش مرکز "+(r.center||"")+" حذف شود؟"))return;
+
   reports=reports.filter(x=>String(x.id)!==String(id));
+
   if(!saveReportsToStorage())return;
+
   renderReports();
   $("settingsReportCount").textContent=reports.length;
 }
 
 function restoreLegacyReport(r){
   const lines=String(r.text||"").split(/\r?\n/);
+
   const data={
     date:normalizeDate(r.date)||todayJalali(),
     worker:lines[1]||$("defaultWorker").value,
@@ -899,19 +1030,28 @@ function restoreLegacyReport(r){
   activityLine.split("،").map(x=>x.trim()).forEach(part=>{
     if(part.startsWith("سایر موارد:")){
       data.otherActivity=part.replace("سایر موارد:","").trim();
+
       if(data.equipment.includes("دوربین"))data.cameraActivities.push("سایر موارد");
       else data.alarmActivities.push("سایر موارد");
+
       return;
     }
+
     if(cam.includes(part))data.cameraActivities.push(part);
     if(alarm.includes(part))data.alarmActivities.push(part);
   });
 
   const expertLine=lines.find(x=>x.includes("تایید توسط آقای"));
-  if(expertLine)data.expert=expertLine.replace("تایید توسط آقای","").trim();
+
+  if(expertLine){
+    data.expert=expertLine.replace("تایید توسط آقای","").trim();
+  }
 
   const noteLine=lines.find(x=>x.startsWith("توضیحات:"));
-  if(noteLine)data.notes=noteLine.replace("توضیحات:","").trim();
+
+  if(noteLine){
+    data.notes=noteLine.replace("توضیحات:","").trim();
+  }
 
   return data;
 }
@@ -944,10 +1084,12 @@ function editReport(id){
   $("visitDate").value=data.date;
   $("worker").value=data.worker;
   $("centerSearch").value="";
+
   searchCenters();
   $("center").value=String(data.centerIndex);
 
   const c=centers[data.centerIndex];
+
   if(c){
     $("centerSearch").value=c[0]+" "+c[1];
     $("centerSearchInfo").textContent="مرکز انتخاب شده";
@@ -962,8 +1104,10 @@ function editReport(id){
 
   if(data.expert){
     const option=[...$("expert").options].find(o=>o.value===data.expert);
-    if(option)$("expert").value=data.expert;
-    else{
+
+    if(option){
+      $("expert").value=data.expert;
+    }else{
       $("expert").value="other";
       $("otherExpert").value=data.expert;
     }
@@ -973,6 +1117,7 @@ function editReport(id){
   setSelected("cameraActivities",data.cameraActivities);
   setSelected("alarmActivities",data.alarmActivities);
   toggleOtherExpert();
+
   show("form");
 }
 
@@ -985,20 +1130,30 @@ function exportBackup(){
     exportDate:new Date().toISOString(),
     reports:reports
   };
+
   const blob=new Blob([JSON.stringify(data,null,2)],{type:"application/json"});
   download(blob,"bank-mellat-backup.json");
 }
 
 function importBackup(){
   const file=$("backupFile").files[0];
-  if(!file){alert("فایل پشتیبان را انتخاب کن.");return;}
+
+  if(!file){
+    alert("فایل پشتیبان را انتخاب کن.");
+    return;
+  }
+
   if(!confirm("اطلاعات فعلی با اطلاعات فایل جایگزین می‌شود. ادامه می‌دهی؟"))return;
 
   const reader=new FileReader();
+
   reader.onload=function(){
     try{
       const data=JSON.parse(reader.result);
-      if(!data||!Array.isArray(data.reports))throw new Error("Invalid backup");
+
+      if(!data||!Array.isArray(data.reports)){
+        throw new Error("Invalid backup");
+      }
 
       const oldReports=reports;
       reports=data.reports.map(r=>({...r,date:normalizeDate(r.date)}));
@@ -1010,10 +1165,15 @@ function importBackup(){
 
       alert("بازیابی اطلاعات با موفقیت انجام شد.");
       $("settingsReportCount").textContent=reports.length;
+
       show("reports");
       renderReports();
-    }catch(e){alert("فایل پشتیبان معتبر نیست.");}
+
+    }catch(e){
+      alert("فایل پشتیبان معتبر نیست.");
+    }
   };
+
   reader.onerror=()=>alert("خواندن فایل با خطا مواجه شد.");
   reader.readAsText(file);
 }
@@ -1021,11 +1181,14 @@ function importBackup(){
 function download(blob,name){
   const a=document.createElement("a");
   const url=URL.createObjectURL(blob);
+
   a.href=url;
   a.download=name;
+
   document.body.appendChild(a);
   a.click();
   a.remove();
+
   setTimeout(()=>URL.revokeObjectURL(url),2000);
 }
 
@@ -1033,24 +1196,35 @@ function download(blob,name){
 
 function saveSettings(){
   const worker=$("defaultWorker").value.trim();
-  if(!worker){alert("نام ثبت‌کننده نمی‌تواند خالی باشد.");return;}
+
+  if(!worker){
+    alert("نام ثبت‌کننده نمی‌تواند خالی باشد.");
+    return;
+  }
+
   try{
     localStorage.setItem(SETTINGS_KEY,JSON.stringify({worker:worker}));
     $("worker").value=worker;
     alert("تنظیمات ذخیره شد.");
-  }catch(e){alert("ذخیره تنظیمات انجام نشد.");}
+  }catch(e){
+    alert("ذخیره تنظیمات انجام نشد.");
+  }
 }
 
 /* شروع برنامه */
 
 function init(){
   searchCenters();
+
   fillChecks("cameraActivities",cam);
   fillChecks("alarmActivities",alarm);
+
   loadReports();
   loadSettings();
+
   $("visitDate").value=todayJalali();
   $("centerCount").textContent=centers.length;
+
   updateActivities();
 }
 
