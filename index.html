@@ -7,1381 +7,197 @@
 <title>گزارش بازدید مراکز بانک ملت</title>
 <link rel="manifest" href="./manifest.json">
 <link rel="icon" href="./icon.svg" type="image/svg+xml">
-
 <style>
 *{box-sizing:border-box}
 body{margin:0;background:#f5f6f8;color:#20242b;font-family:Tahoma,sans-serif;font-size:14px;line-height:1.8}
 header{background:white;border-bottom:1px solid #ddd;padding:16px;text-align:center}
 header h1{font-size:19px;margin:0}
-main{max-width:720px;margin:auto;padding:14px}
+main{max-width:900px;margin:auto;padding:14px}
 .card{background:white;border:1px solid #e1e5ea;border-radius:12px;padding:14px;margin-bottom:13px}
-h2{font-size:17px;margin:0 0 12px}
-h3{font-size:15px;margin:15px 0 8px}
+h2{font-size:17px;margin:0 0 12px}h3{font-size:15px;margin:15px 0 8px}
 button{font:inherit;border:1px solid #ddd;background:white;border-radius:9px;padding:10px 12px;cursor:pointer}
-button:active{opacity:.7}
-.primary{background:#245da8;color:white;border-color:#245da8}
-.green{background:#18794e;color:white;border-color:#18794e}
-.danger{color:#b42318;border-color:#e5b9b5}
-.menu{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.menu button{min-height:58px}
+button:active{opacity:.7}.primary{background:#245da8;color:white;border-color:#245da8}.green{background:#18794e;color:white;border-color:#18794e}.danger{color:#b42318;border-color:#e5b9b5}
+.menu{display:grid;grid-template-columns:1fr 1fr;gap:10px}.menu button{min-height:58px}
 label{display:block;font-weight:bold;margin:10px 0 5px}
 input,select,textarea{width:100%;font:inherit;padding:10px;border:1px solid #cbd2da;border-radius:8px;background:white}
 textarea{min-height:85px;resize:vertical}
 .row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.checks{display:grid;grid-template-columns:1fr 1fr;gap:7px}
-.check{display:flex;align-items:center;gap:7px;border:1px solid #ddd;border-radius:8px;padding:7px;font-weight:normal;margin:0}
-.check input{width:auto;margin:0}
-.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:13px}
-.actions button{flex:1}
-.hidden{display:none!important}
-.muted{color:#68717d;font-size:12px}
+.checks{display:grid;grid-template-columns:1fr 1fr;gap:7px}.check{display:flex;align-items:center;gap:7px;border:1px solid #ddd;border-radius:8px;padding:7px;font-weight:normal;margin:0}.check input{width:auto;margin:0}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:13px}.actions button{flex:1}
+.hidden{display:none!important}.muted{color:#68717d;font-size:12px}
 .report{white-space:pre-wrap;background:#fafafa;border:1px dashed #ccc;border-radius:8px;padding:12px}
-.item{border:1px solid #e1e5ea;border-radius:10px;padding:12px;margin:12px 0}
-.item-title{font-weight:bold;font-size:14px}
-.item-meta{color:#68717d;font-size:12px;margin-top:4px}
+.item{border:1px solid #e1e5ea;border-radius:10px;padding:12px;margin:12px 0}.item-title{font-weight:bold;font-size:14px}.item-meta{color:#68717d;font-size:12px;margin-top:4px}
 .item pre{white-space:pre-wrap;overflow-wrap:anywhere;font-family:Tahoma,sans-serif;font-size:13px;background:#fafafa;padding:10px;border-radius:8px}
-.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
-.stat{background:#f5f7fa;border:1px solid #e5e9ef;border-radius:9px;text-align:center;padding:9px 4px}
-.stat strong{display:block;font-size:20px}
-.stat span{font-size:11px;color:#68717d}
-.empty{text-align:center;color:#68717d;padding:25px 8px;background:#fafafa;border-radius:9px}
-.toolbar{display:flex;gap:8px;flex-wrap:wrap}
-#center{height:auto;min-height:115px}
-.date-input{background:#fff;cursor:pointer}
-.date-input:focus{outline:2px solid #b8d1f2}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.stat{background:#f5f7fa;border:1px solid #e5e9ef;border-radius:9px;text-align:center;padding:9px 4px}.stat strong{display:block;font-size:20px}.stat span{font-size:11px;color:#68717d}
+.empty{text-align:center;color:#68717d;padding:25px 8px;background:#fafafa;border-radius:9px}.toolbar{display:flex;gap:8px;flex-wrap:wrap}
+#center{height:auto;min-height:115px}.date-input{background:#fff;cursor:pointer}.date-input:focus{outline:2px solid #b8d1f2}
 #jalaliPicker{position:fixed;z-index:9999;left:50%;top:50%;transform:translate(-50%,-50%);width:min(350px,94vw);background:white;border:1px solid #d7dce3;border-radius:14px;padding:14px;box-shadow:0 8px 35px #0003}
-.calendar-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:12px}
-.calendar-head button{padding:6px 12px}
-.calendar-title{font-weight:bold;text-align:center;flex:1}
-.calendar-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;text-align:center}
-.calendar-weekday{font-size:11px;color:#697586;padding:5px 0}
-.calendar-day{padding:8px 2px;border:1px solid transparent;border-radius:8px;min-height:38px}
-.calendar-day.selected{background:#245da8;color:white}
-.calendar-day.today{border-color:#245da8}
-.calendar-day:disabled{opacity:.2;cursor:default}
-.calendar-footer{display:flex;gap:8px;margin-top:12px}
-.calendar-footer button{flex:1}
-#calendarOverlay{position:fixed;inset:0;background:#0004;z-index:9998}
-.table-wrap{overflow-x:auto}
-table{width:100%;border-collapse:collapse;font-size:12px;min-width:350px}
-th,td{border:1px solid #e1e5ea;padding:8px;text-align:center}
-th{background:#f2f5f9}
-tr:nth-child(even){background:#fafbfc}
-.stat-section{margin-top:15px}
-.stat-note{background:#f5f7fa;border-radius:8px;padding:10px;font-size:12px;color:#596575}
-@media(max-width:390px){.row,.menu{grid-template-columns:1fr}}
-@media print{
- body{background:white}
- header{border:0}
- main{max-width:none;padding:0}
- body.print-stats main>section:not(#statistics){display:none!important}
- body.print-stats #statistics{display:block!important;border:0}
- body.print-stats #statistics .no-print{display:none!important}
- body.print-stats #statistics .card{border:0}
- body.print-stats table{font-size:11px}
-}
+.calendar-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:12px}.calendar-head button{padding:6px 12px}.calendar-title{font-weight:bold;text-align:center;flex:1}
+.calendar-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;text-align:center}.calendar-weekday{font-size:11px;color:#697586;padding:5px 0}.calendar-day{padding:8px 2px;border:1px solid transparent;border-radius:8px;min-height:38px}.calendar-day.selected{background:#245da8;color:white}.calendar-day.today{border-color:#245da8}
+.calendar-footer{display:flex;gap:8px;margin-top:12px}.calendar-footer button{flex:1}#calendarOverlay{position:fixed;inset:0;background:#0004;z-index:9998}
+.table-wrap{overflow-x:auto}table{width:100%;border-collapse:collapse;font-size:12px;min-width:350px}th,td{border:1px solid #e1e5ea;padding:8px;text-align:center}th{background:#f2f5f9}tr:nth-child(even){background:#fafbfc}
+.stat-section{margin-top:15px}.stat-note{background:#f5f7fa;border-radius:8px;padding:10px;font-size:12px;color:#596575}
+.chart{display:grid;gap:9px}.chart-row{display:grid;grid-template-columns:minmax(95px,150px) 1fr 42px;gap:8px;align-items:center;font-size:12px}.chart-label{overflow-wrap:anywhere}.bar-track{height:13px;background:#edf1f5;border-radius:20px;overflow:hidden}.bar-fill{height:100%;background:#3978bd;border-radius:20px;min-width:0}.chart-value{text-align:left;font-weight:bold;font-variant-numeric:tabular-nums}.chart-empty{color:#68717d;text-align:center;padding:12px;background:#fafafa;border-radius:8px;font-size:12px}
+.detail-list{display:grid;gap:8px;margin-top:12px}.detail-row{border:1px solid #e1e5ea;border-radius:8px;padding:9px;background:#fff}.detail-row strong{display:block}.detail-meta{font-size:12px;color:#596575}.detail-activities{font-size:12px;margin-top:4px;overflow-wrap:anywhere}
+@media(max-width:520px){.row,.menu{grid-template-columns:1fr}.chart-row{grid-template-columns:90px 1fr 35px;gap:5px}.stats{gap:5px}.stat strong{font-size:18px}}
+@media print{body{background:white}header{border:0}main{max-width:none;padding:0}body.print-stats main>section:not(#statistics){display:none!important}body.print-stats #statistics{display:block!important;border:0}body.print-stats #statistics .no-print{display:none!important}body.print-stats #statistics .card{border:0}body.print-stats table{font-size:11px}}
 </style>
 </head>
-
 <body>
-<header>
-<h1>گزارش بازدید مراکز بانک ملت</h1>
-</header>
-
+<header><h1>گزارش بازدید مراکز بانک ملت</h1></header>
 <main>
-
 <section id="home" class="card">
 <div class="menu">
-<button class="primary" onclick="newReport()">ثبت گزارش</button>
-<button onclick="openReports()">مشاهده گزارش‌ها</button>
-<button onclick="openStatistics()">گزارش آماری</button>
-<button onclick="show('backup')">پشتیبان‌گیری و بازیابی</button>
+<button class="primary" onclick="newReport()">ثبت گزارش</button><button onclick="openReports()">مشاهده گزارش‌ها</button>
+<button onclick="openStatistics()">گزارش آماری</button><button onclick="show('backup')">پشتیبان‌گیری و بازیابی</button>
 <button onclick="openSettings()">تنظیمات</button>
-</div>
-</section>
+</div></section>
 
 <section id="form" class="card hidden">
-<h2 id="formTitle">ثبت گزارش</h2>
-<input type="hidden" id="editId">
-
-<div class="row">
-<div>
-<label> تاریخ مراجعه </label>
-<input id="visitDate" class="date-input" type="text" readonly placeholder="انتخاب تاریخ" onclick="openJalaliPicker('visitDate')" onfocus="openJalaliPicker('visitDate')">
-</div>
-<div>
-<label>نام ثبت‌کننده</label>
-<input id="worker" value="کیوان اسمعیل پور">
-</div>
-</div>
-
-<label>جست‌وجو و انتخاب مرکز</label>
-<input id="centerSearch" type="search" placeholder="نام مرکز، نوع یا کد را تایپ کن..." oninput="searchCenters()" autocomplete="off">
-<select id="center" size="5" onchange="centerSelected()"></select>
-<div class="muted" id="centerSearchInfo"></div>
-
-<div class="row">
-<div>
-<label>نوع مراجعه</label>
-<select id="visitType" onchange="updateActivities()">
-<option value="ادواری">ادواری</option>
-<option value="موردی">موردی</option>
-</select>
-</div>
-<div>
-<label>تجهیزات</label>
-<select id="equipment" onchange="updateActivities()">
-<option value="دوربین">دوربین</option>
-<option value="دزدگیر">دزدگیر</option>
-<option value="دوربین و دزدگیر">دوربین و دزدگیر</option>
-</select>
-</div>
-</div>
-
-<div id="activityArea">
-<div id="cameraBlock">
-<label>فعالیت‌های دوربین</label>
-<div id="cameraActivities" class="checks"></div>
-</div>
-<div id="alarmBlock">
-<label>فعالیت‌های دزدگیر</label>
-<div id="alarmActivities" class="checks"></div>
-</div>
-<label id="otherLabel">عنوان فعالیت سایر موارد</label>
-<input id="otherActivity" placeholder="عنوان فعالیت جدید">
-</div>
-
-<div id="expertBlock">
-<hr>
-<h2>کارشناس دوربین</h2>
-<label>انتخاب کارشناس</label>
-<select id="expert" onchange="toggleOtherExpert()">
-<option value="یادگار">یادگار</option>
-<option value="متقی">متقی</option>
-<option value="نظری">نظری</option>
-<option value="محمدی">محمدی</option>
-<option value="other">نام دیگر</option>
-</select>
-<input id="otherExpert" class="hidden" placeholder="نام کارشناس">
-</div>
-
-<label>توضیحات تکمیلی</label>
-<textarea id="notes" placeholder="توضیحات اختیاری..."></textarea>
-
-<div class="actions">
-<button class="primary" onclick="previewReport()">پیش‌نمایش</button>
-<button onclick="show('home')">بازگشت</button>
-</div>
+<h2 id="formTitle">ثبت گزارش</h2><input type="hidden" id="editId">
+<div class="row"><div><label>تاریخ مراجعه</label><input id="visitDate" class="date-input" type="text" readonly placeholder="انتخاب تاریخ" onclick="openJalaliPicker('visitDate')" onfocus="openJalaliPicker('visitDate')"></div>
+<div><label>نام ثبت‌کننده</label><input id="worker" value="کیوان اسمعیل پور"></div></div>
+<label>جست‌وجو و انتخاب مرکز</label><input id="centerSearch" type="search" placeholder="نام مرکز، نوع یا کد را تایپ کن..." oninput="searchCenters()" autocomplete="off">
+<select id="center" size="5" onchange="centerSelected()"></select><div class="muted" id="centerSearchInfo"></div>
+<div class="row"><div><label>نوع مراجعه</label><select id="visitType" onchange="updateActivities()"><option value="ادواری">ادواری</option><option value="موردی">موردی</option></select></div>
+<div><label>تجهیزات</label><select id="equipment" onchange="updateActivities()"><option value="دوربین">دوربین</option><option value="دزدگیر">دزدگیر</option><option value="دوربین و دزدگیر">دوربین و دزدگیر</option></select></div></div>
+<div id="activityArea"><div id="cameraBlock"><label>فعالیت‌های دوربین</label><div id="cameraActivities" class="checks"></div></div>
+<div id="alarmBlock"><label>فعالیت‌های دزدگیر</label><div id="alarmActivities" class="checks"></div></div>
+<label id="otherLabel">عنوان فعالیت سایر موارد</label><input id="otherActivity" placeholder="عنوان فعالیت جدید"></div>
+<div id="expertBlock"><hr><h2>کارشناس دوربین</h2><label>انتخاب کارشناس</label><select id="expert" onchange="toggleOtherExpert()"><option value="یادگار">یادگار</option><option value="متقی">متقی</option><option value="نظری">نظری</option><option value="محمدی">محمدی</option><option value="other">نام دیگر</option></select><input id="otherExpert" class="hidden" placeholder="نام کارشناس"></div>
+<label>توضیحات تکمیلی</label><textarea id="notes" placeholder="توضیحات اختیاری..."></textarea>
+<div class="actions"><button class="primary" onclick="previewReport()">پیش‌نمایش</button><button onclick="show('home')">بازگشت</button></div>
 </section>
 
-<section id="preview" class="card hidden">
-<h2>پیش‌نمایش گزارش</h2>
-<div id="previewText" class="report"></div>
-<div class="actions">
-<button class="primary" onclick="copyReport()">کپی گزارش</button>
-<button class="green" onclick="saveReport()">ذخیره گزارش</button>
-<button onclick="show('form')">ویرایش</button>
-</div>
-</section>
+<section id="preview" class="card hidden"><h2>پیش‌نمایش گزارش</h2><div id="previewText" class="report"></div>
+<div class="actions"><button class="primary" onclick="copyReport()">کپی گزارش</button><button class="green" onclick="saveReport()">ذخیره گزارش</button><button onclick="show('form')">ویرایش</button></div></section>
 
-<section id="reports" class="card hidden">
-<h2>مشاهده گزارش‌ها</h2>
+<section id="reports" class="card hidden"><h2>مشاهده گزارش‌ها</h2>
+<div class="stats"><div class="stat"><strong id="totalReports">۰</strong><span>کل گزارش‌ها</span></div><div class="stat"><strong id="periodicReports">۰</strong><span>ادواری</span></div><div class="stat"><strong id="specialReports">۰</strong><span>موردی</span></div></div>
+<label>جست‌وجو</label><input id="searchReport" placeholder="نام مرکز یا متن گزارش..." oninput="renderReports()">
+<div class="row"><div><label>از تاریخ</label><input id="filterFrom" class="date-input" type="text" readonly placeholder="انتخاب تاریخ" onclick="openJalaliPicker('filterFrom')" onfocus="openJalaliPicker('filterFrom')"></div>
+<div><label>تا تاریخ</label><input id="filterTo" class="date-input" type="text" readonly placeholder="انتخاب تاریخ" onclick="openJalaliPicker('filterTo')" onfocus="openJalaliPicker('filterTo')"></div></div>
+<div class="row"><div><label>نوع مراجعه</label><select id="filterType" onchange="renderReports()"><option value="">همه</option><option value="ادواری">ادواری</option><option value="موردی">موردی</option></select></div>
+<div><label>تجهیزات</label><select id="filterEquipment" onchange="renderReports()"><option value="">همه</option><option value="دوربین">دوربین</option><option value="دزدگیر">دزدگیر</option><option value="دوربین و دزدگیر">دوربین و دزدگیر</option></select></div></div>
+<div class="actions"><button onclick="clearReportFilters()">پاک کردن فیلترها</button></div><hr><div class="muted" id="filteredCount"></div><div id="reportList"></div>
+<div class="actions"><button onclick="show('home')">بازگشت</button></div></section>
 
-<div class="stats">
-<div class="stat"><strong id="totalReports">۰</strong><span>کل گزارش‌ها</span></div>
-<div class="stat"><strong id="periodicReports">۰</strong><span>ادواری</span></div>
-<div class="stat"><strong id="specialReports">۰</strong><span>موردی</span></div>
-</div>
-
-<label>جست‌وجو</label>
-<input id="searchReport" placeholder="نام مرکز یا متن گزارش..." oninput="renderReports()">
-
-<div class="row">
-<div>
-<label>از تاریخ </label>
-<input id="filterFrom" class="date-input" type="text" readonly placeholder="انتخاب تاریخ" onclick="openJalaliPicker('filterFrom')" onfocus="openJalaliPicker('filterFrom')">
-</div>
-<div>
-<label>تا تاریخ </label>
-<input id="filterTo" class="date-input" type="text" readonly placeholder="انتخاب تاریخ" onclick="openJalaliPicker('filterTo')" onfocus="openJalaliPicker('filterTo')">
-</div>
-</div>
-
-<div class="row">
-<div>
-<label>نوع مراجعه</label>
-<select id="filterType" onchange="renderReports()">
-<option value="">همه</option>
-<option value="ادواری">ادواری</option>
-<option value="موردی">موردی</option>
-</select>
-</div>
-<div>
-<label>تجهیزات</label>
-<select id="filterEquipment" onchange="renderReports()">
-<option value="">همه</option>
-<option value="دوربین">دوربین</option>
-<option value="دزدگیر">دزدگیر</option>
-<option value="دوربین و دزدگیر">دوربین و دزدگیر</option>
-</select>
-</div>
-</div>
-
-<div class="actions">
-<button onclick="clearReportFilters()">پاک کردن فیلترها</button>
-</div>
-
-<hr>
-<div class="muted" id="filteredCount"></div>
-<div id="reportList"></div>
-
-<div class="actions">
-<button onclick="show('home')">بازگشت</button>
-</div>
-</section>
-
-<!-- بخش جدید گزارش آماری -->
 <section id="statistics" class="card hidden">
-<h2>گزارش آماری بازدیدها</h2>
-
-<div class="stat-note">
-آمار بر اساس تاریخ شمسی گزارش‌های ذخیره‌شده محاسبه می‌شود.
-</div>
-
-<div class="row">
-<div>
-<label>سال شمسی</label>
-<select id="statYear" onchange="renderStatistics()"></select>
-</div>
-<div>
-<label>ماه شمسی</label>
-<select id="statMonth" onchange="renderStatistics()">
-<option value="">تمام ماه‌های سال</option>
-<option value="1">فروردین</option>
-<option value="2">اردیبهشت</option>
-<option value="3">خرداد</option>
-<option value="4">تیر</option>
-<option value="5">مرداد</option>
-<option value="6">شهریور</option>
-<option value="7">مهر</option>
-<option value="8">آبان</option>
-<option value="9">آذر</option>
-<option value="10">دی</option>
-<option value="11">بهمن</option>
-<option value="12">اسفند</option>
-</select>
-</div>
-</div>
-
-<label>تفکیک بر اساس مرکز / شعبه</label>
-<select id="statCenter" onchange="renderStatistics()">
-<option value="">همه مراکز</option>
-</select>
-
-<div class="actions no-print">
-<button onclick="resetStatistics()">پاک کردن انتخاب شعبه</button>
-<button class="primary" onclick="window.print()">چاپ گزارش آماری</button>
-</div>
-
-<hr>
-
-<h3 id="statPeriodTitle">آمار سال</h3>
-<div class="stats">
-<div class="stat"><strong id="statTotal">۰</strong><span>کل بازدیدها</span></div>
-<div class="stat"><strong id="statPeriodic">۰</strong><span>ادواری</span></div>
-<div class="stat"><strong id="statSpecial">۰</strong><span>موردی</span></div>
-</div>
-
-<div class="stat-section">
-<h3>تفکیک تجهیزات</h3>
-<div class="stats">
-<div class="stat"><strong id="statCamera">۰</strong><span>دوربین</span></div>
-<div class="stat"><strong id="statAlarm">۰</strong><span>دزدگیر</span></div>
-<div class="stat"><strong id="statBoth">۰</strong><span>هر دو</span></div>
-</div>
-</div>
-
-<div class="stat-section">
-<h3>آمار ماهانه</h3>
-<div class="table-wrap">
-<table>
-<thead>
-<tr><th>ماه</th><th>کل بازدید</th><th>ادواری</th><th>موردی</th></tr>
-</thead>
-<tbody id="monthlyStats"></tbody>
-</table>
-</div>
-</div>
-
-<div class="stat-section">
-<h3>تفکیک بازدید مراکز</h3>
-<div class="muted" id="centerStatsInfo"></div>
-<div class="table-wrap">
-<table>
-<thead>
-<tr><th>ردیف</th><th>نام مرکز</th><th>تعداد بازدید</th><th>ادواری</th><th>موردی</th></tr>
-</thead>
-<tbody id="centerStats"></tbody>
-</table>
-</div>
-</div>
-
-<div class="stat-section">
-<h3>جزئیات مرکز انتخاب‌شده</h3>
-<div id="selectedCenterStats" class="stat-note">برای مشاهده جزئیات، یک شعبه را انتخاب کن.</div>
-</div>
-
-<div class="actions no-print">
-<button onclick="show('home')">بازگشت به منوی اصلی</button>
-</div>
+<h2>گزارش آماری بازدیدها</h2><div class="stat-note">آمار بر اساس تاریخ شمسی گزارش‌های ذخیره‌شده محاسبه می‌شود. فیلترهای سال، ماه، مرکز و بازه تاریخ به‌صورت هم‌زمان اعمال می‌شوند.</div>
+<div class="row"><div><label>سال شمسی</label><select id="statYear" onchange="renderStatistics()"></select></div>
+<div><label>ماه شمسی</label><select id="statMonth" onchange="renderStatistics()"><option value="">تمام ماه‌های سال</option><option value="1">فروردین</option><option value="2">اردیبهشت</option><option value="3">خرداد</option><option value="4">تیر</option><option value="5">مرداد</option><option value="6">شهریور</option><option value="7">مهر</option><option value="8">آبان</option><option value="9">آذر</option><option value="10">دی</option><option value="11">بهمن</option><option value="12">اسفند</option></select></div></div>
+<label>تفکیک بر اساس مرکز / شعبه</label><select id="statCenter" onchange="renderStatistics()"><option value="">همه مراکز</option></select>
+<div class="row"><div><label>از تاریخ شمسی</label><input id="statFrom" class="date-input" type="text" readonly placeholder="بدون محدودیت" onclick="openJalaliPicker('statFrom')" onfocus="openJalaliPicker('statFrom')"></div>
+<div><label>تا تاریخ شمسی</label><input id="statTo" class="date-input" type="text" readonly placeholder="بدون محدودیت" onclick="openJalaliPicker('statTo')" onfocus="openJalaliPicker('statTo')"></div></div>
+<div class="actions no-print"><button onclick="resetStatistics()">پاک کردن فیلترها</button><button class="primary" onclick="window.print()">چاپ گزارش آماری</button></div>
+<div class="actions no-print"><button class="green" onclick="exportStatisticsCSV(true)">خروجی CSV بر اساس فیلتر</button><button onclick="exportStatisticsCSV(false)">خروجی CSV همه گزارش‌ها</button></div>
+<hr><h3 id="statPeriodTitle">آمار سال</h3>
+<div class="stats"><div class="stat"><strong id="statTotal">۰</strong><span>کل بازدیدها</span></div><div class="stat"><strong id="statPeriodic">۰</strong><span>ادواری</span></div><div class="stat"><strong id="statSpecial">۰</strong><span>موردی</span></div></div>
+<div class="stat-section"><h3>تفکیک تجهیزات</h3><div class="stats"><div class="stat"><strong id="statCamera">۰</strong><span>دوربین</span></div><div class="stat"><strong id="statAlarm">۰</strong><span>دزدگیر</span></div><div class="stat"><strong id="statBoth">۰</strong><span>هر دو</span></div></div></div>
+<div class="stat-section"><h3>نمودار تعداد بازدید ماهانه</h3><div id="monthlyChart" class="chart"></div></div>
+<div class="stat-section"><h3>آمار ماهانه</h3><div class="table-wrap"><table><thead><tr><th>ماه</th><th>کل بازدید</th><th>ادواری</th><th>موردی</th></tr></thead><tbody id="monthlyStats"></tbody></table></div></div>
+<div class="stat-section"><h3>تفکیک بازدید مراکز</h3><div class="muted" id="centerStatsInfo"></div><div class="table-wrap"><table><thead><tr><th>ردیف</th><th>نام مرکز</th><th>تعداد بازدید</th><th>ادواری</th><th>موردی</th></tr></thead><tbody id="centerStats"></tbody></table></div></div>
+<div class="stat-section"><h3>نمودار مقایسه مراکز</h3><div id="centerChart" class="chart"></div></div>
+<div class="row"><div class="stat-section"><h3>نمودار نوع مراجعه</h3><div id="typeChart" class="chart"></div></div><div class="stat-section"><h3>نمودار تجهیزات</h3><div id="equipmentChart" class="chart"></div></div></div>
+<div class="stat-section"><h3>جزئیات مرکز انتخاب‌شده</h3><div id="selectedCenterStats" class="stat-note">برای مشاهده جزئیات، یک شعبه را انتخاب کن.</div><div id="selectedCenterReports" class="detail-list"></div></div>
+<div class="actions no-print"><button onclick="show('home')">بازگشت به منوی اصلی</button></div>
 </section>
 
-<section id="backup" class="card hidden">
-<h2>پشتیبان‌گیری و بازیابی</h2>
-<p class="muted">اطلاعات گزارش‌ها در حافظه همین مرورگر ذخیره می‌شود. برای جلوگیری از حذف اطلاعات، مرتب پشتیبان تهیه کن.</p>
-<button class="primary" onclick="exportBackup()">دریافت پشتیبان JSON</button>
-<label>انتخاب فایل پشتیبان</label>
-<input type="file" id="backupFile" accept=".json,application/json">
-<div class="actions">
-<button class="danger" onclick="importBackup()">بازیابی اطلاعات</button>
-<button onclick="show('home')">بازگشت</button>
-</div>
-</section>
-
-<section id="settings" class="card hidden">
-<h2>تنظیمات</h2>
-<label>نام پیش‌فرض ثبت‌کننده</label>
-<input id="defaultWorker" value="کیوان اسمعیل پور">
-<div class="actions">
-<button class="primary" onclick="saveSettings()">ذخیره تنظیمات</button>
-<button onclick="show('home')">بازگشت</button>
-</div>
-<hr>
-<p>تعداد مراکز تعریف‌شده: <b id="centerCount"></b></p>
-<p>تعداد گزارش‌های ذخیره‌شده: <b id="settingsReportCount"></b></p>
-</section>
-
+<section id="backup" class="card hidden"><h2>پشتیبان‌گیری و بازیابی</h2><p class="muted">اطلاعات گزارش‌ها در حافظه همین مرورگر ذخیره می‌شود. برای جلوگیری از حذف اطلاعات، مرتب پشتیبان تهیه کن.</p><button class="primary" onclick="exportBackup()">دریافت پشتیبان JSON</button><label>انتخاب فایل پشتیبان</label><input type="file" id="backupFile" accept=".json,application/json"><div class="actions"><button class="danger" onclick="importBackup()">بازیابی اطلاعات</button><button onclick="show('home')">بازگشت</button></div></section>
+<section id="settings" class="card hidden"><h2>تنظیمات</h2><label>نام پیش‌فرض ثبت‌کننده</label><input id="defaultWorker" value="کیوان اسمعیل پور"><div class="actions"><button class="primary" onclick="saveSettings()">ذخیره تنظیمات</button><button onclick="show('home')">بازگشت</button></div><hr><p>تعداد مراکز تعریف‌شده: <b id="centerCount"></b></p><p>تعداد گزارش‌های ذخیره‌شده: <b id="settingsReportCount"></b></p></section>
 </main>
-
 <div id="calendarOverlay" class="hidden" onclick="closeJalaliPicker()"></div>
-<div id="jalaliPicker" class="hidden">
- <div class="calendar-head">
-  <button type="button" onclick="changeJalaliMonth(-1)">ماه قبل</button>
-  <div class="calendar-title" id="calendarTitle"></div>
-  <button type="button" onclick="changeJalaliMonth(1)">ماه بعد</button>
- </div>
- <div class="calendar-grid" id="calendarGrid"></div>
- <div class="calendar-footer">
-  <button type="button" onclick="selectToday()">امروز</button>
-  <button type="button" onclick="closeJalaliPicker()">بستن</button>
- </div>
-</div>
+<div id="jalaliPicker" class="hidden"><div class="calendar-head"><button type="button" onclick="changeJalaliMonth(-1)">ماه قبل</button><div class="calendar-title" id="calendarTitle"></div><button type="button" onclick="changeJalaliMonth(1)">ماه بعد</button></div><div class="calendar-grid" id="calendarGrid"></div><div class="calendar-footer"><button type="button" onclick="selectToday()">امروز</button><button type="button" onclick="closeJalaliPicker()">بستن</button></div></div>
 
 <script>
 "use strict";
-
 const centers=[
-["شعبه","هادیشهر","۱۲۴۰۱"],
-["شعبه","جلفا","۱۲۰۶۲"],
-["شعبه","ورزقان","۱۲۳۲۸"],
-["شعبه","اهر","۱۲۲۵۲"],
-["شعبه","نیایش تبریز","۱۳۵۶۵"],
-["شعبه","چهارراه طالقانی تبریز","۱۳۷۲۲"],
-["شعبه","چهارراه ابوریحان تبریز","۱۳۸۲۱"],
-["شعبه","چهارراه لاله تبریز","۱۳۵۵۷"],
-["شعبه","میدان جهاد تبریز","۱۳۵۸۱"],
-["شعبه","ارک تبریز","۱۳۷۰۶"],
-["شعبه","پروین اعتصامی تبریز","۱۳۴۳۳"],
-["شعبه","صائب تبریز","۱۴۱۴۲"],
-["شعبه","پزشکان تبریز","۱۳۷۶۳"],
-["شعبه","میدان ساعت تبریز","۱۳۴۷۴"],
-["شعبه","کوی ولیعصر تبریز","۱۳۴۸۲"],
-["شعبه","فروغی تبریز","۱۴۱۲۶"],
-["شعبه","رودکی تبریز","۱۳۷۷۱"],
-["شعبه","کجوار تبریز","۱۴۱۰۰"],
-["شعبه","سردرود","۱۳۹۰۴"],
-["شعبه","بلوار ملت تبریز","۱۳۷۳۰"],
-["شعبه","اسکو","۱۵۸۰۰"],
-["شعبه","خسروشاه","۱۳۹۱۲"],
-["شعبه","ایلخچی","۱۶۵۰۱"],
-["شعبه","آذرشهر","۱۵۸۸۳"],
-["شعبه","عجب‌شیر","۱۶۶۲۶"],
-["شعبه","بناب","۱۶۶۵۹"],
-["شعبه","مدرس بناب","۱۶۶۱۸"],
-["شعبه","ملکان","۱۶۶۰۰"],
-["شعبه","قدس مراغه","۱۶۱۳۹"],
-["شعبه","خواجه نصیر مراغه","۱۶۱۰۵۰۳"],
-["شعبه","مرکزی مراغه","۱۶۱۰۵"],
-["باجه","کلیبر","۱۲۲۵۲۰۲"],
-["باجه","ممقان","۱۵۸۸۳۰۱"],
-["باجه","گوگان","۱۵۸۸۳۰۲"],
-["باجه","میدان بار تبریز","۱۳۷۳۰۰۲"],
-["پایگاه","انقلاب","۵۲۳۱"],
-["پایگاه","شهرک امام","۵۲۳۱"],
-["پایگاه","آخونی","۵۲۳۱"],
-["پایگاه","آخمقیه","۵۲۳۱"],
-["پایگاه","۱۷ شهریور","۵۲۳۱"],
-["پایگاه","خیام","۵۲۳۱"],
-["پایگاه","سهند","۵۲۳۱"],
-["مرکز ویژه","صندوق امانات","۵۲۳۱"],
-["مرکز ویژه","خزانه‌داری","۵۲۳۱"],
-["سرپرستی","سرپرستی آذربایجان شرقی",""]
-];
-
+["شعبه","هادیشهر","۱۲۴۰۱"],["شعبه","جلفا","۱۲۰۶۲"],["شعبه","ورزقان","۱۲۳۲۸"],["شعبه","اهر","۱۲۲۵۲"],
+["شعبه","نیایش تبریز","۱۳۵۶۵"],["شعبه","چهارراه طالقانی تبریز","۱۳۷۲۲"],["شعبه","چهارراه ابوریحان تبریز","۱۳۸۲۱"],["شعبه","چهارراه لاله تبریز","۱۳۵۵۷"],["شعبه","میدان جهاد تبریز","۱۳۵۸۱"],["شعبه","ارک تبریز","۱۳۷۰۶"],["شعبه","پروین اعتصامی تبریز","۱۳۴۳۳"],["شعبه","صائب تبریز","۱۴۱۴۲"],["شعبه","پزشکان تبریز","۱۳۷۶۳"],["شعبه","میدان ساعت تبریز","۱۳۴۷۴"],["شعبه","کوی ولیعصر تبریز","۱۳۴۸۲"],["شعبه","فروغی تبریز","۱۴۱۲۶"],["شعبه","رودکی تبریز","۱۳۷۷۱"],["شعبه","کجوار تبریز","۱۴۱۰۰"],["شعبه","سردرود","۱۳۹۰۴"],["شعبه","بلوار ملت تبریز","۱۳۷۳۰"],["شعبه","اسکو","۱۵۸۰۰"],["شعبه","خسروشاه","۱۳۹۱۲"],["شعبه","ایلخچی","۱۶۵۰۱"],["شعبه","آذرشهر","۱۵۸۸۳"],["شعبه","عجب‌شیر","۱۶۶۲۶"],["شعبه","بناب","۱۶۶۵۹"],["شعبه","مدرس بناب","۱۶۶۱۸"],["شعبه","ملکان","۱۶۶۰۰"],["شعبه","قدس مراغه","۱۶۱۳۹"],["شعبه","خواجه نصیر مراغه","۱۶۱۰۵۰۳"],["شعبه","مرکزی مراغه","۱۶۱۰۵"],["باجه","کلیبر","۱۲۲۵۲۰۲"],["باجه","ممقان","۱۵۸۸۳۰۱"],["باجه","گوگان","۱۵۸۸۳۰۲"],["باجه","میدان بار تبریز","۱۳۷۳۰۰۲"],["پایگاه","انقلاب","۵۲۳۱"],["پایگاه","شهرک امام","۵۲۳۱"],["پایگاه","آخونی","۵۲۳۱"],["پایگاه","آخمقیه","۵۲۳۱"],["پایگاه","۱۷ شهریور","۵۲۳۱"],["پایگاه","خیام","۵۲۳۱"],["پایگاه","سهند","۵۲۳۱"],["مرکز ویژه","صندوق امانات","۵۲۳۱"],["مرکز ویژه","خزانه‌داری","۵۲۳۱"],["سرپرستی","سرپرستی آذربایجان شرقی",""]];
 const cam=["درخواست فیلم","خرابی دوربین","تعویض دوربین","نصب دوربین","تعویض سرور","کلین سرور","ریکاوری سرور","سایر موارد"];
 const alarm=["نقص پدال","نقص آژیر","تعویض باتری","نصب پدال","تعویض چشمی","سایر موارد"];
-
-const STORAGE_KEY="bm_reports";
-const SETTINGS_KEY="bm_settings";
-let reports=[];
-let draft="";
-let currentDraftData=null;
-let calendarTarget=null;
-let calendarYear=0;
-let calendarMonth=0;
-
+const STORAGE_KEY="bm_reports",SETTINGS_KEY="bm_settings";
+let reports=[],draft="",currentDraftData=null,calendarTarget=null,calendarYear=0,calendarMonth=0;
 const $=id=>document.getElementById(id);
-
-/* ابزارهای تاریخ شمسی */
-
-const jalaliFormatter=new Intl.DateTimeFormat("en-u-ca-persian-nu-latn",{
-  year:"numeric",month:"numeric",day:"numeric",timeZone:"UTC"
-});
-
-function toEnglishDigits(value){
-  return String(value)
-    .replace(/[۰-۹]/g,d=>"۰۱۲۳۴۵۶۷۸۹".indexOf(d))
-    .replace(/[٠-٩]/g,d=>"٠١٢٣٤٥٦٧٨٩".indexOf(d));
-}
-
-function jalaliPartsFromGregorian(date){
-  const parts=jalaliFormatter.formatToParts(date);
-  const get=t=>{
-    const part=parts.find(p=>p.type===t);
-    return part?Number(toEnglishDigits(part.value)):NaN;
-  };
-  return {y:get("year"),m:get("month"),d:get("day")};
-}
-
-function gregorianToJalali(iso){
-  const p=iso.split("-").map(Number);
-  const date=new Date(Date.UTC(p[0],p[1]-1,p[2],12));
-  const j=jalaliPartsFromGregorian(date);
-  return jalaliString(j.y,j.m,j.d);
-}
-
-function jalaliString(y,m,d){
-  return String(y).padStart(4,"0")+"/"+String(m).padStart(2,"0")+"/"+String(d).padStart(2,"0");
-}
-
-function parseJalali(value){
-  const s=toEnglishDigits(value).replace(/-/g,"/");
-  const p=s.split("/").map(Number);
-  if(p.length!==3||!p.every(Number.isFinite))return null;
-  if(p[1]<1||p[1]>12||p[2]<1||p[2]>31)return null;
-  return {y:p[0],m:p[1],d:p[2]};
-}
-
-function firstGregorianDayOfJalaliMonth(y,m){
-  const startYear=y+621;
-  const start=Date.UTC(startYear,2,15,12);
-  const end=Date.UTC(startYear+1,3,10,12);
-
-  for(let t=start;t<=end;t+=86400000){
-    const date=new Date(t);
-    const p=jalaliPartsFromGregorian(date);
-    if(p.y===y&&p.m===m&&p.d===1)return date;
-  }
-  return null;
-}
-
-function jalaliMonthLength(y,m){
-  const first=firstGregorianDayOfJalaliMonth(y,m);
-  if(!first)return 30;
-
-  let nextYear=y,nextMonth=m+1;
-  if(nextMonth===13){nextMonth=1;nextYear++;}
-
-  const next=firstGregorianDayOfJalaliMonth(nextYear,nextMonth);
-  if(!next)return m<=6?31:30;
-
-  return Math.round((next.getTime()-first.getTime())/86400000);
-}
-
-function jalaliToGregorianISO(value){
-  const p=typeof value==="string"?parseJalali(value):value;
-  if(!p)return "";
-
-  const first=firstGregorianDayOfJalaliMonth(p.y,p.m);
-  if(!first)return "";
-
-  const date=new Date(first.getTime()+(p.d-1)*86400000);
-  return date.toISOString().slice(0,10);
-}
-
-function normalizeDate(value){
-  if(!value)return "";
-  if(/^\d{4}-\d{2}-\d{2}$/.test(value))return gregorianToJalali(value);
-
-  const p=parseJalali(value);
-  return p?jalaliString(p.y,p.m,p.d):"";
-}
-
-function todayJalali(){
-  const now=new Date();
-  const iso=now.getFullYear()+"-"+String(now.getMonth()+1).padStart(2,"0")+"-"+String(now.getDate()).padStart(2,"0");
-  return gregorianToJalali(iso);
-}
-
-function toPersian(value){
-  return String(value).replace(/\d/g,d=>"۰۱۲۳۴۵۶۷۸۹"[Number(d)]);
-}
-
-function formatDate(value){
-  const normalized=normalizeDate(value);
-  return normalized?toPersian(normalized):"";
-}
-
-/* تقویم انتخاب تاریخ */
-
-function openJalaliPicker(targetId){
-  const target=$(targetId);
-  if(!target)return;
-
-  calendarTarget=targetId;
-  const current=parseJalali(target.value)||parseJalali(todayJalali());
-  if(!current)return;
-
-  calendarYear=current.y;
-  calendarMonth=current.m;
-  renderJalaliCalendar();
-
-  $("calendarOverlay").classList.remove("hidden");
-  $("jalaliPicker").classList.remove("hidden");
-}
-
-function closeJalaliPicker(){
-  $("calendarOverlay").classList.add("hidden");
-  $("jalaliPicker").classList.add("hidden");
-  calendarTarget=null;
-}
-
-function changeJalaliMonth(amount){
-  calendarMonth+=amount;
-
-  if(calendarMonth>12){calendarMonth=1;calendarYear++;}
-  if(calendarMonth<1){calendarMonth=12;calendarYear--;}
-
-  renderJalaliCalendar();
-}
-
-function renderJalaliCalendar(){
-  const months=["فروردین","اردیبهشت","خرداد","تیر","مرداد","شهریور","مهر","آبان","آذر","دی","بهمن","اسفند"];
-  const weekdays=["شنبه","یکشنبه","دوشنبه","سه‌شنبه","چهارشنبه","پنجشنبه","جمعه"];
-
-  $("calendarTitle").textContent=months[calendarMonth-1]+" "+toPersian(calendarYear);
-
-  const grid=$("calendarGrid");
-  grid.innerHTML=weekdays.map(x=>`<div class="calendar-weekday">${x}</div>`).join("");
-
-  const first=firstGregorianDayOfJalaliMonth(calendarYear,calendarMonth);
-
-  if(!first){
-    grid.innerHTML+='<div style="grid-column:1/-1;text-align:center;padding:15px">خطا در ساخت تقویم</div>';
-    return;
-  }
-
-  const offset=(first.getUTCDay()+1)%7;
-  const length=jalaliMonthLength(calendarYear,calendarMonth);
-  const selected=calendarTarget?parseJalali($(calendarTarget).value):null;
-  const today=parseJalali(todayJalali());
-
-  for(let i=0;i<offset;i++)grid.appendChild(document.createElement("div"));
-
-  for(let day=1;day<=length;day++){
-    const isSelected=selected&&selected.y===calendarYear&&selected.m===calendarMonth&&selected.d===day;
-    const isToday=today&&today.y===calendarYear&&today.m===calendarMonth&&today.d===day;
-    const classes=["calendar-day",isSelected?"selected":"",isToday?"today":""].filter(Boolean).join(" ");
-
-    const btn=document.createElement("button");
-    btn.type="button";
-    btn.className=classes;
-    btn.textContent=toPersian(day);
-    btn.onclick=()=>chooseJalaliDay(day);
-    grid.appendChild(btn);
-  }
-}
-
-function chooseJalaliDay(day){
-  if(!calendarTarget)return;
-  const target=calendarTarget;
-  const input=$(target);
-  if(!input)return;
-
-  input.value=jalaliString(calendarYear,calendarMonth,day);
-  closeJalaliPicker();
-
-  if(target==="filterFrom"||target==="filterTo")renderReports();
-}
-
-function selectToday(){
-  const p=parseJalali(todayJalali());
-  if(!p)return;
-  calendarYear=p.y;
-  calendarMonth=p.m;
-  chooseJalaliDay(p.d);
-}
-
-/* ذخیره سازی */
-
-function loadReports(){
-  try{
-    const data=JSON.parse(localStorage.getItem(STORAGE_KEY)||"[]");
-    reports=Array.isArray(data)?data:[];
-    reports=reports.map(r=>({...r,date:normalizeDate(r.date)}));
-  }catch(e){reports=[];}
-}
-
-function saveReportsToStorage(){
-  try{
-    localStorage.setItem(STORAGE_KEY,JSON.stringify(reports));
-    return true;
-  }catch(e){
-    alert("ذخیره اطلاعات انجام نشد. فضای ذخیره‌سازی مرورگر را بررسی کن.");
-    return false;
-  }
-}
-
-function loadSettings(){
-  try{
-    const s=JSON.parse(localStorage.getItem(SETTINGS_KEY)||"{}");
-    if(s.worker)$("defaultWorker").value=s.worker;
-    $("worker").value=$("defaultWorker").value;
-  }catch(e){}
-}
-
-function show(id){
-  document.querySelectorAll("main>section").forEach(s=>s.classList.add("hidden"));
-  $(id).classList.remove("hidden");
-  window.scrollTo(0,0);
-}
-
-function openReports(){
-  clearReportFilters(false);
-  show("reports");
-  renderReports();
-}
-
-function openSettings(){
-  $("centerCount").textContent=centers.length;
-  $("settingsReportCount").textContent=reports.length;
-  show("settings");
-}
-
-function fillChecks(id,list){
-  $(id).innerHTML=list.map((x,i)=>
-    `<label class="check"><input type="checkbox" value="${escapeHtml(x)}" id="${id}_${i}">${escapeHtml(x)}</label>`
-  ).join("");
-}
-
-/* جست‌وجوی مراکز */
-
-function normalizeText(s){
-  return String(s||"")
-    .replace(/ي/g,"ی")
-    .replace(/ك/g,"ک")
-    .replace(/\u200c/g," ")
-    .toLowerCase()
-    .trim();
-}
-
-function searchCenters(){
-  const q=normalizeText($("centerSearch").value);
-  const select=$("center");
-  const oldValue=select.value;
-
-  const matches=centers.map((c,i)=>({c,i})).filter(x=>{
-    const text=normalizeText(x.c[0]+" "+x.c[1]+" "+x.c[2]);
-    return !q||text.includes(q);
-  });
-
-  select.innerHTML=matches.map(x=>
-    `<option value="${x.i}">${escapeHtml(x.c[0])} ${escapeHtml(x.c[1])}${x.c[2]?" ـ کد "+escapeHtml(x.c[2]):""}</option>`
-  ).join("");
-
-  if(matches.some(x=>String(x.i)===oldValue))select.value=oldValue;
-
-  $("centerSearchInfo").textContent=toPersian(matches.length)+" مرکز پیدا شد";
-}
-
-function centerSelected(){
-  const c=centers[Number($("center").value)];
-  if(!c)return;
-  $("centerSearch").value=c[0]+" "+c[1];
-  $("centerSearchInfo").textContent="مرکز انتخاب شد";
-}
-
-/* فرم گزارش */
-
-function newReport(){
-  resetForm();
-  show("form");
-}
-
-function resetForm(){
-  $("editId").value="";
-  $("formTitle").textContent="ثبت گزارش";
-  $("visitDate").value=todayJalali();
-  $("worker").value=$("defaultWorker").value;
-  $("centerSearch").value="";
-
-  searchCenters();
-  $("center").value="0";
-
-  $("visitType").value="ادواری";
-  $("equipment").value="دوربین";
-  $("notes").value="";
-  $("otherActivity").value="";
-  $("expert").value="یادگار";
-  $("otherExpert").value="";
-
-  document.querySelectorAll(".checks input").forEach(x=>x.checked=false);
-  toggleOtherExpert();
-  updateActivities();
-}
-
-function updateActivities(){
-  const periodic=$("visitType").value==="ادواری";
-  const equipment=$("equipment").value;
-  const camera=equipment.includes("دوربین");
-  const alarm=equipment.includes("دزدگیر");
-
-  $("activityArea").classList.toggle("hidden",periodic);
-  $("cameraBlock").classList.toggle("hidden",periodic||!camera);
-  $("alarmBlock").classList.toggle("hidden",periodic||!alarm);
-  $("otherLabel").classList.toggle("hidden",periodic);
-  $("otherActivity").classList.toggle("hidden",periodic);
-  $("expertBlock").classList.toggle("hidden",!camera);
-}
-
-function toggleOtherExpert(){
-  $("otherExpert").classList.toggle("hidden",$("expert").value!=="other");
-}
-
-function selected(id){
-  return [...document.querySelectorAll("#"+id+" input:checked")].map(x=>x.value);
-}
-
-function setSelected(id,values){
-  const set=new Set(values||[]);
-  document.querySelectorAll("#"+id+" input").forEach(x=>x.checked=set.has(x.value));
-}
-
-function collectFormData(){
-  const date=normalizeDate($("visitDate").value);
-
-  if(!date){alert("تاریخ مراجعه را انتخاب کن.");return null;}
-
-  const worker=$("worker").value.trim();
-  if(!worker){alert("نام ثبت‌کننده را وارد کن.");return null;}
-
-  const centerIndex=Number($("center").value);
-  const c=centers[centerIndex];
-  if(!c){alert("لطفاً یک مرکز را از فهرست نتایج انتخاب کن.");return null;}
-
-  const equipment=$("equipment").value;
-  const visitType=$("visitType").value;
-  const periodic=visitType==="ادواری";
-
-  let cameraActivities=[],alarmActivities=[],activities=[];
-
-  if(!periodic){
-    if(equipment.includes("دوربین")){
-      cameraActivities=selected("cameraActivities");
-      activities.push(...cameraActivities);
-    }
-    if(equipment.includes("دزدگیر")){
-      alarmActivities=selected("alarmActivities");
-      activities.push(...alarmActivities);
-    }
-    if(!activities.length){alert("برای مراجعه موردی حداقل یک فعالیت انتخاب کن.");return null;}
-
-    if(activities.includes("سایر موارد")){
-      const other=$("otherActivity").value.trim();
-      if(!other){alert("عنوان سایر موارد را وارد کن.");return null;}
-      activities=activities.filter(x=>x!=="سایر موارد");
-      activities.push("سایر موارد: "+other);
-    }
-  }
-
-  let expert="";
-  if(equipment.includes("دوربین")){
-    expert=$("expert").value==="other"?$("otherExpert").value.trim():$("expert").value;
-    if(!expert){alert("نام کارشناس را وارد کن.");return null;}
-  }
-
-  return {
-    date,worker,centerIndex,center:c[1],centerType:c[0],centerCode:c[2],
-    visitType,equipment,cameraActivities,alarmActivities,activities,
-    otherActivity:$("otherActivity").value.trim(),expert,
-    notes:$("notes").value.trim()
-  };
-}
-
-function makeReportText(data){
-  const lines=[
-    formatDate(data.date)+"؛",
-    data.worker,
-    data.centerCode||"بدون کد",
-    data.centerType+" "+data.center,
-    data.visitType+" "+data.equipment
-  ];
-
-  if(data.visitType!=="ادواری"&&data.activities.length)lines.push(data.activities.join("، "));
-  if(data.equipment.includes("دوربین"))lines.push("تایید توسط آقای "+data.expert);
-  if(data.notes)lines.push("توضیحات: "+data.notes);
-
-  return lines.join("\n");
-}
-
-function previewReport(){
-  const data=collectFormData();
-  if(!data)return;
-
-  currentDraftData=data;
-  draft=makeReportText(data);
-  $("previewText").textContent=draft;
-  show("preview");
-}
-
-async function copyReport(){
-  if(!draft)return;
-  try{
-    await navigator.clipboard.writeText(draft);
-    alert("گزارش کپی شد.");
-  }catch(e){fallbackCopy(draft);}
-}
-
-function fallbackCopy(text){
-  const area=document.createElement("textarea");
-  area.value=text;
-  document.body.appendChild(area);
-  area.select();
-
-  try{document.execCommand("copy");alert("گزارش کپی شد.");}
-  catch(e){alert("کپی خودکار ممکن نشد.");}
-
-  area.remove();
-}
-
-function saveReport(){
-  if(!currentDraftData){alert("ابتدا پیش‌نمایش گزارش را ایجاد کن.");return;}
-
-  const id=$("editId").value||String(Date.now());
-  const obj={id:id,text:draft,...currentDraftData};
-  const index=reports.findIndex(x=>String(x.id)===String(id));
-
-  if(index>=0)reports[index]=obj;
-  else reports.push(obj);
-
-  if(!saveReportsToStorage())return;
-
-  $("editId").value="";
-  alert(index>=0?"گزارش ویرایش و ذخیره شد.":"گزارش ذخیره شد.");
-  $("settingsReportCount").textContent=reports.length;
-
-  show("reports");
-  renderReports();
-}
-
-/* فیلتر و نمایش گزارش ها */
-
-function clearReportFilters(render=true){
-  $("searchReport").value="";
-  $("filterFrom").value="";
-  $("filterTo").value="";
-  $("filterType").value="";
-  $("filterEquipment").value="";
-  if(render)renderReports();
-}
-
-function getFilteredReports(){
-  const search=normalizeText($("searchReport").value);
-  const from=normalizeDate($("filterFrom").value);
-  const to=normalizeDate($("filterTo").value);
-  const type=$("filterType").value;
-  const equipment=$("filterEquipment").value;
-
-  return reports.filter(r=>{
-    const date=normalizeDate(r.date||"");
-    if(from&&date<from)return false;
-    if(to&&date>to)return false;
-    if(type&&(r.visitType||"")!==type)return false;
-    if(equipment&&(r.equipment||"")!==equipment)return false;
-
-    if(search){
-      const content=normalizeText((r.center||"")+" "+(r.text||"")+" "+(r.worker||""));
-      if(!content.includes(search))return false;
-    }
-    return true;
-  }).sort((a,b)=>{
-    const da=normalizeDate(a.date||"");
-    const db=normalizeDate(b.date||"");
-    if(db!==da)return db.localeCompare(da);
-    return String(b.id||"").localeCompare(String(a.id||""));
-  });
-}
-
-function renderReports(){
-  const total=reports.length;
-  const periodic=reports.filter(r=>r.visitType==="ادواری").length;
-  const special=reports.filter(r=>r.visitType==="موردی").length;
-
-  $("totalReports").textContent=toPersian(total);
-  $("periodicReports").textContent=toPersian(periodic);
-  $("specialReports").textContent=toPersian(special);
-
-  const list=getFilteredReports();
-  $("filteredCount").textContent="نمایش "+toPersian(list.length)+" گزارش از "+toPersian(total)+" گزارش";
-
-  if(!list.length){
-    $("reportList").innerHTML='<div class="empty">گزارشی با این مشخصات پیدا نشد.</div>';
-    return;
-  }
-
-  $("reportList").innerHTML=list.map(r=>`
-    <div class="item">
-      <div class="item-title">${escapeHtml(r.centerType||"مرکز")} ${escapeHtml(r.center||"")}</div>
-      <div class="item-meta">
-        تاریخ: ${escapeHtml(formatDate(r.date))}
-        <br>${escapeHtml(r.visitType||"")} ـ ${escapeHtml(r.equipment||"")}
-      </div>
-      <div class="actions">
-        <button data-action="copy" data-id="${escapeHtml(r.id)}">کپی</button>
-        <button data-action="edit" data-id="${escapeHtml(r.id)}">ویرایش</button>
-        <button class="danger" data-action="delete" data-id="${escapeHtml(r.id)}">حذف</button>
-      </div>
-      <details>
-        <summary>مشاهده متن گزارش</summary>
-        <pre>${escapeHtml(r.text||"")}</pre>
-      </details>
-    </div>
-  `).join("");
-}
-
-function escapeHtml(s){
-  return String(s??"").replace(/[&<>"']/g,c=>({
-    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
-  }[c]));
-}
-
-/* عملیات گزارش ها */
-
-$("reportList").addEventListener("click",function(event){
-  const button=event.target.closest("button[data-action]");
-  if(!button)return;
-
-  const id=button.dataset.id;
-  const action=button.dataset.action;
-
-  if(action==="copy")copySaved(id);
-  if(action==="edit")editReport(id);
-  if(action==="delete")deleteReport(id);
-});
-
-async function copySaved(id){
-  const r=reports.find(x=>String(x.id)===String(id));
-  if(!r)return;
-  try{
-    await navigator.clipboard.writeText(r.text||"");
-    alert("گزارش کپی شد.");
-  }catch(e){fallbackCopy(r.text||"");}
-}
-
-function deleteReport(id){
-  const r=reports.find(x=>String(x.id)===String(id));
-  if(!r)return;
-  if(!confirm("گزارش مرکز "+(r.center||"")+" حذف شود؟"))return;
-
-  reports=reports.filter(x=>String(x.id)!==String(id));
-  if(!saveReportsToStorage())return;
-
-  renderReports();
-  $("settingsReportCount").textContent=reports.length;
-}
-
-function restoreLegacyReport(r){
-  const lines=String(r.text||"").split(/\r?\n/);
-
-  const data={
-    date:normalizeDate(r.date)||todayJalali(),
-    worker:lines[1]||$("defaultWorker").value,
-    centerIndex:centers.findIndex(c=>c[1]===r.center),
-    visitType:r.visitType||"موردی",
-    equipment:r.equipment||"دوربین",
-    cameraActivities:[],alarmActivities:[],otherActivity:"",
-    expert:"",notes:""
-  };
-
-  if(data.centerIndex<0)data.centerIndex=0;
-
-  const activityLine=lines.find(line=>
-    cam.some(x=>line.includes(x))||
-    alarm.some(x=>line.includes(x))||
-    line.includes("سایر موارد:")
-  )||"";
-
-  activityLine.split("،").map(x=>x.trim()).forEach(part=>{
-    if(part.startsWith("سایر موارد:")){
-      data.otherActivity=part.replace("سایر موارد:","").trim();
-      if(data.equipment.includes("دوربین"))data.cameraActivities.push("سایر موارد");
-      else data.alarmActivities.push("سایر موارد");
-      return;
-    }
-    if(cam.includes(part))data.cameraActivities.push(part);
-    if(alarm.includes(part))data.alarmActivities.push(part);
-  });
-
-  const expertLine=lines.find(x=>x.includes("تایید توسط آقای"));
-  if(expertLine)data.expert=expertLine.replace("تایید توسط آقای","").trim();
-
-  const noteLine=lines.find(x=>x.startsWith("توضیحات:"));
-  if(noteLine)data.notes=noteLine.replace("توضیحات:","").trim();
-
-  return data;
-}
-
-function editReport(id){
-  const r=reports.find(x=>String(x.id)===String(id));
-  if(!r)return;
-
-  let data;
-
-  if(r.cameraActivities||r.alarmActivities||r.centerIndex!==undefined){
-    data={
-      date:normalizeDate(r.date)||todayJalali(),
-      worker:r.worker||$("defaultWorker").value,
-      centerIndex:Number(r.centerIndex??centers.findIndex(c=>c[1]===r.center)),
-      visitType:r.visitType||"موردی",
-      equipment:r.equipment||"دوربین",
-      cameraActivities:r.cameraActivities||[],
-      alarmActivities:r.alarmActivities||[],
-      otherActivity:r.otherActivity||"",
-      expert:r.expert||"",
-      notes:r.notes||""
-    };
-  }else{data=restoreLegacyReport(r);}
-
-  $("editId").value=r.id;
-  $("formTitle").textContent="ویرایش گزارش";
-  $("visitDate").value=data.date;
-  $("worker").value=data.worker;
-  $("centerSearch").value="";
-
-  searchCenters();
-  $("center").value=String(data.centerIndex);
-
-  const c=centers[data.centerIndex];
-  if(c){
-    $("centerSearch").value=c[0]+" "+c[1];
-    $("centerSearchInfo").textContent="مرکز انتخاب شده";
-  }
-
-  $("visitType").value=data.visitType;
-  $("equipment").value=data.equipment;
-  $("notes").value=data.notes||"";
-  $("otherActivity").value=data.otherActivity||"";
-  $("expert").value="یادگار";
-  $("otherExpert").value="";
-
-  if(data.expert){
-    const option=[...$("expert").options].find(o=>o.value===data.expert);
-    if(option)$("expert").value=data.expert;
-    else{$("expert").value="other";$("otherExpert").value=data.expert;}
-  }
-
-  updateActivities();
-  setSelected("cameraActivities",data.cameraActivities);
-  setSelected("alarmActivities",data.alarmActivities);
-  toggleOtherExpert();
-  show("form");
-}
-
-/* گزارش آماری جدید */
-
+const jalaliFormatter=new Intl.DateTimeFormat("en-u-ca-persian-nu-latn",{year:"numeric",month:"numeric",day:"numeric",timeZone:"UTC"});
+function toEnglishDigits(v){return String(v).replace(/[۰-۹]/g,d=>"۰۱۲۳۴۵۶۷۸۹".indexOf(d)).replace(/[٠-٩]/g,d=>"٠١٢٣٤٥٦٧٨٩".indexOf(d))}
+function jalaliPartsFromGregorian(date){const p=jalaliFormatter.formatToParts(date),get=t=>{const x=p.find(a=>a.type===t);return x?Number(toEnglishDigits(x.value)):NaN};return{y:get("year"),m:get("month"),d:get("day")}}
+function gregorianToJalali(iso){const p=iso.split("-").map(Number),j=jalaliPartsFromGregorian(new Date(Date.UTC(p[0],p[1]-1,p[2],12)));return jalaliString(j.y,j.m,j.d)}
+function jalaliString(y,m,d){return String(y).padStart(4,"0")+"/"+String(m).padStart(2,"0")+"/"+String(d).padStart(2,"0")}
+function parseJalali(v){if(!v)return null;const p=toEnglishDigits(v).replace(/-/g,"/").split("/").map(Number);if(p.length!==3||!p.every(Number.isFinite)||p[1]<1||p[1]>12||p[2]<1||p[2]>31)return null;return{y:p[0],m:p[1],d:p[2]}}
+function firstGregorianDayOfJalaliMonth(y,m){const start=Date.UTC(y+621,2,15,12),end=Date.UTC(y+622,3,10,12);for(let t=start;t<=end;t+=86400000){const d=new Date(t),p=jalaliPartsFromGregorian(d);if(p.y===y&&p.m===m&&p.d===1)return d}return null}
+function jalaliMonthLength(y,m){const a=firstGregorianDayOfJalaliMonth(y,m);if(!a)return 30;let ny=y,nm=m+1;if(nm===13){nm=1;ny++}const b=firstGregorianDayOfJalaliMonth(ny,nm);return b?Math.round((b-a)/86400000):(m<=6?31:30)}
+function normalizeDate(v){if(!v)return"";if(/^\d{4}-\d{2}-\d{2}$/.test(v))return gregorianToJalali(v);const p=parseJalali(v);return p?jalaliString(p.y,p.m,p.d):""}
+function todayJalali(){const n=new Date();return gregorianToJalali(n.getFullYear()+"-"+String(n.getMonth()+1).padStart(2,"0")+"-"+String(n.getDate()).padStart(2,"0"))}
+function toPersian(v){return String(v).replace(/\d/g,d=>"۰۱۲۳۴۵۶۷۸۹"[+d])}
+function formatDate(v){const n=normalizeDate(v);return n?toPersian(n):""}
+function openJalaliPicker(id){const t=$(id);if(!t)return;calendarTarget=id;const p=parseJalali(t.value)||parseJalali(todayJalali());calendarYear=p.y;calendarMonth=p.m;renderJalaliCalendar();$("calendarOverlay").classList.remove("hidden");$("jalaliPicker").classList.remove("hidden")}
+function closeJalaliPicker(){$("calendarOverlay").classList.add("hidden");$("jalaliPicker").classList.add("hidden");calendarTarget=null}
+function changeJalaliMonth(n){calendarMonth+=n;if(calendarMonth>12){calendarMonth=1;calendarYear++}if(calendarMonth<1){calendarMonth=12;calendarYear--}renderJalaliCalendar()}
+function renderJalaliCalendar(){const months=["فروردین","اردیبهشت","خرداد","تیر","مرداد","شهریور","مهر","آبان","آذر","دی","بهمن","اسفند"],week=["شنبه","یکشنبه","دوشنبه","سه‌شنبه","چهارشنبه","پنجشنبه","جمعه"];$("calendarTitle").textContent=months[calendarMonth-1]+" "+toPersian(calendarYear);const g=$("calendarGrid");g.innerHTML=week.map(x=>`<div class="calendar-weekday">${x}</div>`).join("");const first=firstGregorianDayOfJalaliMonth(calendarYear,calendarMonth);if(!first){g.innerHTML+='<div style="grid-column:1/-1">خطا در ساخت تقویم</div>';return}const offset=(first.getUTCDay()+1)%7,len=jalaliMonthLength(calendarYear,calendarMonth),sel=calendarTarget?parseJalali($(calendarTarget).value):null,today=parseJalali(todayJalali());for(let i=0;i<offset;i++)g.appendChild(document.createElement("div"));for(let d=1;d<=len;d++){const b=document.createElement("button"),s=sel&&sel.y===calendarYear&&sel.m===calendarMonth&&sel.d===d,t=today&&today.y===calendarYear&&today.m===calendarMonth&&today.d===d;b.type="button";b.className="calendar-day"+(s?" selected":"")+(t?" today":"");b.textContent=toPersian(d);b.onclick=()=>chooseJalaliDay(d);g.appendChild(b)}}
+function chooseJalaliDay(d){if(!calendarTarget)return;const id=calendarTarget;$(id).value=jalaliString(calendarYear,calendarMonth,d);closeJalaliPicker();if(["filterFrom","filterTo"].includes(id))renderReports();if(["statFrom","statTo"].includes(id))renderStatistics()}
+function selectToday(){const p=parseJalali(todayJalali());calendarYear=p.y;calendarMonth=p.m;chooseJalaliDay(p.d)}
+function loadReports(){try{const d=JSON.parse(localStorage.getItem(STORAGE_KEY)||"[]");reports=Array.isArray(d)?d:[];reports=reports.map(r=>({...r,date:normalizeDate(r.date)}))}catch(e){reports=[]}}
+function saveReportsToStorage(){try{localStorage.setItem(STORAGE_KEY,JSON.stringify(reports));return true}catch(e){alert("ذخیره اطلاعات انجام نشد. فضای ذخیره‌سازی مرورگر را بررسی کن.");return false}}
+function loadSettings(){try{const s=JSON.parse(localStorage.getItem(SETTINGS_KEY)||"{}");if(s.worker)$("defaultWorker").value=s.worker;$("worker").value=$("defaultWorker").value}catch(e){}}
+function show(id){document.querySelectorAll("main>section").forEach(s=>s.classList.add("hidden"));$(id).classList.remove("hidden");window.scrollTo(0,0)}
+function openReports(){clearReportFilters(false);show("reports");renderReports()}
+function openSettings(){$("centerCount").textContent=centers.length;$("settingsReportCount").textContent=reports.length;show("settings")}
+function fillChecks(id,list){$(id).innerHTML=list.map((x,i)=>`<label class="check"><input type="checkbox" value="${escapeHtml(x)}" id="${id}_${i}">${escapeHtml(x)}</label>`).join("")}
+function normalizeText(s){return String(s||"").replace(/ي/g,"ی").replace(/ك/g,"ک").replace(/\u200c/g," ").toLowerCase().trim()}
+function searchCenters(){const q=normalizeText($("centerSearch").value),sel=$("center"),old=sel.value,m=centers.map((c,i)=>({c,i})).filter(x=>!q||normalizeText(x.c.join(" ")).includes(q));sel.innerHTML=m.map(x=>`<option value="${x.i}">${escapeHtml(x.c[0])} ${escapeHtml(x.c[1])}${x.c[2]?" ـ کد "+escapeHtml(x.c[2]):""}</option>`).join("");if(m.some(x=>String(x.i)===old))sel.value=old;$("centerSearchInfo").textContent=toPersian(m.length)+" مرکز پیدا شد"}
+function centerSelected(){const c=centers[Number($("center").value)];if(c){$("centerSearch").value=c[0]+" "+c[1];$("centerSearchInfo").textContent="مرکز انتخاب شد"}}
+function newReport(){resetForm();show("form")}
+function resetForm(){$("editId").value="";$("formTitle").textContent="ثبت گزارش";$("visitDate").value=todayJalali();$("worker").value=$("defaultWorker").value;$("centerSearch").value="";searchCenters();$("center").value="0";$("visitType").value="ادواری";$("equipment").value="دوربین";$("notes").value="";$("otherActivity").value="";$("expert").value="یادگار";$("otherExpert").value="";document.querySelectorAll(".checks input").forEach(x=>x.checked=false);toggleOtherExpert();updateActivities()}
+function updateActivities(){const periodic=$("visitType").value==="ادواری",eq=$("equipment").value,camera=eq.includes("دوربین"),alarm=eq.includes("دزدگیر");$("activityArea").classList.toggle("hidden",periodic);$("cameraBlock").classList.toggle("hidden",periodic||!camera);$("alarmBlock").classList.toggle("hidden",periodic||!alarm);$("otherLabel").classList.toggle("hidden",periodic);$("otherActivity").classList.toggle("hidden",periodic);$("expertBlock").classList.toggle("hidden",!camera)}
+function toggleOtherExpert(){$("otherExpert").classList.toggle("hidden",$("expert").value!=="other")}
+function selected(id){return[...document.querySelectorAll("#"+id+" input:checked")].map(x=>x.value)}
+function setSelected(id,values){const s=new Set(values||[]);document.querySelectorAll("#"+id+" input").forEach(x=>x.checked=s.has(x.value))}
+function collectFormData(){const date=normalizeDate($("visitDate").value);if(!date){alert("تاریخ مراجعه را انتخاب کن.");return null}const worker=$("worker").value.trim();if(!worker){alert("نام ثبت‌کننده را وارد کن.");return null}const centerIndex=Number($("center").value),c=centers[centerIndex];if(!c){alert("لطفاً یک مرکز را از فهرست نتایج انتخاب کن.");return null}const equipment=$("equipment").value,visitType=$("visitType").value,periodic=visitType==="ادواری";let cameraActivities=[],alarmActivities=[],activities=[];if(!periodic){if(equipment.includes("دوربین")){cameraActivities=selected("cameraActivities");activities.push(...cameraActivities)}if(equipment.includes("دزدگیر")){alarmActivities=selected("alarmActivities");activities.push(...alarmActivities)}if(!activities.length){alert("برای مراجعه موردی حداقل یک فعالیت انتخاب کن.");return null}if(activities.includes("سایر موارد")){const other=$("otherActivity").value.trim();if(!other){alert("عنوان سایر موارد را وارد کن.");return null}activities=activities.filter(x=>x!=="سایر موارد");activities.push("سایر موارد: "+other)}}let expert="";if(equipment.includes("دوربین")){expert=$("expert").value==="other"?$("otherExpert").value.trim():$("expert").value;if(!expert){alert("نام کارشناس را وارد کن.");return null}}return{date,worker,centerIndex,center:c[1],centerType:c[0],centerCode:c[2],visitType,equipment,cameraActivities,alarmActivities,activities,otherActivity:$("otherActivity").value.trim(),expert,notes:$("notes").value.trim()}}
+function makeReportText(d){const a=[formatDate(d.date)+"؛",d.worker,d.centerCode||"بدون کد",d.centerType+" "+d.center,d.visitType+" "+d.equipment];if(d.visitType!=="ادواری"&&d.activities.length)a.push(d.activities.join("، "));if(d.equipment.includes("دوربین"))a.push("تایید توسط آقای "+d.expert);if(d.notes)a.push("توضیحات: "+d.notes);return a.join("\n")}
+function previewReport(){const d=collectFormData();if(!d)return;currentDraftData=d;draft=makeReportText(d);$("previewText").textContent=draft;show("preview")}
+async function copyReport(){if(!draft)return;try{await navigator.clipboard.writeText(draft);alert("گزارش کپی شد.")}catch(e){fallbackCopy(draft)}}
+function fallbackCopy(t){const a=document.createElement("textarea");a.value=t;document.body.appendChild(a);a.select();try{document.execCommand("copy");alert("گزارش کپی شد.")}catch(e){alert("کپی خودکار ممکن نشد.")}a.remove()}
+function saveReport(){if(!currentDraftData){alert("ابتدا پیش‌نمایش گزارش را ایجاد کن.");return}const id=$("editId").value||String(Date.now()),obj={id,text:draft,...currentDraftData},i=reports.findIndex(x=>String(x.id)===String(id));if(i>=0)reports[i]=obj;else reports.push(obj);if(!saveReportsToStorage())return;$("editId").value="";alert(i>=0?"گزارش ویرایش و ذخیره شد.":"گزارش ذخیره شد.");$("settingsReportCount").textContent=reports.length;show("reports");renderReports()}
+function clearReportFilters(render=true){$("searchReport").value="";$("filterFrom").value="";$("filterTo").value="";$("filterType").value="";$("filterEquipment").value="";if(render)renderReports()}
+function sortReports(list){return list.slice().sort((a,b)=>{const da=normalizeDate(a.date||""),db=normalizeDate(b.date||"");return db.localeCompare(da)||String(b.id||"").localeCompare(String(a.id||""))})}
+function getFilteredReports(){const search=normalizeText($("searchReport").value),from=normalizeDate($("filterFrom").value),to=normalizeDate($("filterTo").value),type=$("filterType").value,eq=$("filterEquipment").value;return sortReports(reports.filter(r=>{const d=normalizeDate(r.date||"");if(from&&d<from)return false;if(to&&d>to)return false;if(type&&(r.visitType||"")!==type)return false;if(eq&&(r.equipment||"")!==eq)return false;if(search&&!normalizeText((r.center||"")+" "+(r.text||"")+" "+(r.worker||"")).includes(search))return false;return true}))}
+function renderReports(){const total=reports.length;$("totalReports").textContent=toPersian(total);$("periodicReports").textContent=toPersian(reports.filter(r=>r.visitType==="ادواری").length);$("specialReports").textContent=toPersian(reports.filter(r=>r.visitType==="موردی").length);const list=getFilteredReports();$("filteredCount").textContent="نمایش "+toPersian(list.length)+" گزارش از "+toPersian(total)+" گزارش";if(!list.length){$("reportList").innerHTML='<div class="empty">گزارشی با این مشخصات پیدا نشد.</div>';return}$("reportList").innerHTML=list.map(r=>`<div class="item"><div class="item-title">${escapeHtml(r.centerType||"مرکز")} ${escapeHtml(r.center||"")}</div><div class="item-meta">تاریخ: ${escapeHtml(formatDate(r.date))}<br>${escapeHtml(r.visitType||"")} ـ ${escapeHtml(r.equipment||"")}</div><div class="actions"><button data-action="copy" data-id="${escapeHtml(r.id)}">کپی</button><button data-action="edit" data-id="${escapeHtml(r.id)}">ویرایش</button><button class="danger" data-action="delete" data-id="${escapeHtml(r.id)}">حذف</button></div><details><summary>مشاهده متن گزارش</summary><pre>${escapeHtml(r.text||"")}</pre></details></div>`).join("")}
+function escapeHtml(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+$("reportList").addEventListener("click",e=>{const b=e.target.closest("button[data-action]");if(!b)return;const id=b.dataset.id,a=b.dataset.action;if(a==="copy")copySaved(id);if(a==="edit")editReport(id);if(a==="delete")deleteReport(id)});
+async function copySaved(id){const r=reports.find(x=>String(x.id)===String(id));if(!r)return;try{await navigator.clipboard.writeText(r.text||"");alert("گزارش کپی شد.")}catch(e){fallbackCopy(r.text||"")}}
+function deleteReport(id){const r=reports.find(x=>String(x.id)===String(id));if(!r||!confirm("گزارش مرکز "+(r.center||"")+" حذف شود؟"))return;reports=reports.filter(x=>String(x.id)!==String(id));if(!saveReportsToStorage())return;renderReports();$("settingsReportCount").textContent=reports.length}
+function restoreLegacyReport(r){const l=String(r.text||"").split(/\r?\n/),d={date:normalizeDate(r.date)||todayJalali(),worker:l[1]||$("defaultWorker").value,centerIndex:centers.findIndex(c=>c[1]===r.center),visitType:r.visitType||"موردی",equipment:r.equipment||"دوربین",cameraActivities:[],alarmActivities:[],otherActivity:"",expert:"",notes:""};if(d.centerIndex<0)d.centerIndex=0;const line=l.find(x=>cam.some(a=>x.includes(a))||alarm.some(a=>x.includes(a))||x.includes("سایر موارد:"))||"";line.split("،").map(x=>x.trim()).forEach(x=>{if(x.startsWith("سایر موارد:")){d.otherActivity=x.replace("سایر موارد:","").trim();if(d.equipment.includes("دوربین"))d.cameraActivities.push("سایر موارد");else d.alarmActivities.push("سایر موارد");return}if(cam.includes(x))d.cameraActivities.push(x);if(alarm.includes(x))d.alarmActivities.push(x)});const ex=l.find(x=>x.includes("تایید توسط آقای"));if(ex)d.expert=ex.replace("تایید توسط آقای","").trim();const no=l.find(x=>x.startsWith("توضیحات:"));if(no)d.notes=no.replace("توضیحات:","").trim();return d}
+function editReport(id){const r=reports.find(x=>String(x.id)===String(id));if(!r)return;let d;if(r.cameraActivities||r.alarmActivities||r.centerIndex!==undefined){d={date:normalizeDate(r.date)||todayJalali(),worker:r.worker||$("defaultWorker").value,centerIndex:Number(r.centerIndex??centers.findIndex(c=>c[1]===r.center)),visitType:r.visitType||"موردی",equipment:r.equipment||"دوربین",cameraActivities:r.cameraActivities||[],alarmActivities:r.alarmActivities||[],otherActivity:r.otherActivity||"",expert:r.expert||"",notes:r.notes||""}}else d=restoreLegacyReport(r);$("editId").value=r.id;$("formTitle").textContent="ویرایش گزارش";$("visitDate").value=d.date;$("worker").value=d.worker;$("centerSearch").value="";searchCenters();$("center").value=String(d.centerIndex);const c=centers[d.centerIndex];if(c){$("centerSearch").value=c[0]+" "+c[1];$("centerSearchInfo").textContent="مرکز انتخاب شده"}$("visitType").value=d.visitType;$("equipment").value=d.equipment;$("notes").value=d.notes||"";$("otherActivity").value=d.otherActivity||"";$("expert").value="یادگار";$("otherExpert").value="";if(d.expert){const o=[...$("expert").options].find(x=>x.value===d.expert);if(o)$("expert").value=d.expert;else{$("expert").value="other";$("otherExpert").value=d.expert}}updateActivities();setSelected("cameraActivities",d.cameraActivities);setSelected("alarmActivities",d.alarmActivities);toggleOtherExpert();show("form")}
+
+/* آمار */
 const statMonths=["فروردین","اردیبهشت","خرداد","تیر","مرداد","شهریور","مهر","آبان","آذر","دی","بهمن","اسفند"];
-
-function getReportCenterIndex(r){
-  if(r.centerIndex!==undefined&&centers[Number(r.centerIndex)])return Number(r.centerIndex);
-  return centers.findIndex(c=>normalizeText(c[1])===normalizeText(r.center||""));
-}
-
-function getReportJalaliParts(r){
-  return parseJalali(normalizeDate(r.date||""));
-}
-
-function prepareStatistics(){
-  const current=parseJalali(todayJalali());
-  const years=new Set([current.y]);
-
-  reports.forEach(r=>{
-    const p=getReportJalaliParts(r);
-    if(p)years.add(p.y);
-  });
-
-  const sorted=[...years].sort((a,b)=>b-a);
-  $("statYear").innerHTML=sorted.map(y=>
-    `<option value="${y}">${toPersian(y)}</option>`
-  ).join("");
-
-  $("statYear").value=String(current.y);
-
-  $("statCenter").innerHTML=
-    '<option value="">همه مراکز</option>'+
-    centers.map((c,i)=>
-      `<option value="${i}">${escapeHtml(c[0]+" "+c[1])}${c[2]?" ـ کد "+escapeHtml(c[2]):""}</option>`
-    ).join("");
-}
-
-function openStatistics(){
-  prepareStatistics();
-  show("statistics");
-  renderStatistics();
-}
-
-function resetStatistics(){
-  $("statCenter").value="";
-  $("statMonth").value="";
-  renderStatistics();
-}
-
-function reportMatchesStatPeriod(r,year,month){
-  const p=getReportJalaliParts(r);
-  if(!p||p.y!==year)return false;
-  if(month&&p.m!==month)return false;
-  return true;
-}
-
-function getStatisticsReports(){
-  const year=Number($("statYear").value);
-  const month=Number($("statMonth").value)||0;
-  const centerValue=$("statCenter").value;
-
-  return reports.filter(r=>{
-    if(!reportMatchesStatPeriod(r,year,month))return false;
-
-    if(centerValue!==""){
-      const index=getReportCenterIndex(r);
-      if(index!==Number(centerValue))return false;
-    }
-    return true;
-  });
-}
-
-function countEquipment(list,equipment){
-  return list.filter(r=>(r.equipment||"")===equipment).length;
-}
-
-function renderStatistics(){
-  if(!$("statYear").value)return;
-
-  const year=Number($("statYear").value);
-  const month=Number($("statMonth").value)||0;
-  const centerValue=$("statCenter").value;
-  const list=getStatisticsReports();
-
-  const periodic=list.filter(r=>r.visitType==="ادواری").length;
-  const special=list.filter(r=>r.visitType==="موردی").length;
-
-  $("statTotal").textContent=toPersian(list.length);
-  $("statPeriodic").textContent=toPersian(periodic);
-  $("statSpecial").textContent=toPersian(special);
-
-  $("statCamera").textContent=toPersian(countEquipment(list,"دوربین"));
-  $("statAlarm").textContent=toPersian(countEquipment(list,"دزدگیر"));
-  $("statBoth").textContent=toPersian(countEquipment(list,"دوربین و دزدگیر"));
-
-  let periodText="سال "+toPersian(year);
-  if(month)periodText+=" ـ "+statMonths[month-1];
-  if(centerValue!==""){
-    const c=centers[Number(centerValue)];
-    if(c)periodText+=" ـ "+c[0]+" "+c[1];
-  }
-  $("statPeriodTitle").textContent="آمار "+periodText;
-
-  /* آمار ماهانه */
-  const monthly=[];
-  const monthStart=month||1;
-  const monthEnd=month||12;
-
-  for(let m=monthStart;m<=monthEnd;m++){
-    const rows=reports.filter(r=>{
-      const p=getReportJalaliParts(r);
-      return p&&p.y===year&&p.m===m&&
-        (centerValue===""||getReportCenterIndex(r)===Number(centerValue));
-    });
-
-    monthly.push(`
-      <tr>
-        <td>${statMonths[m-1]}</td>
-        <td>${toPersian(rows.length)}</td>
-        <td>${toPersian(rows.filter(r=>r.visitType==="ادواری").length)}</td>
-        <td>${toPersian(rows.filter(r=>r.visitType==="موردی").length)}</td>
-      </tr>
-    `);
-  }
-
-  $("monthlyStats").innerHTML=monthly.join("")||
-    '<tr><td colspan="4">اطلاعاتی وجود ندارد</td></tr>';
-
-  /* جدول مقایسه مراکز */
-  let centerRows=centers.map((c,index)=>{
-    const rows=list.filter(r=>getReportCenterIndex(r)===index);
-    return {c,index,rows};
-  }).filter(x=>x.rows.length>0);
-
-  centerRows.sort((a,b)=>b.rows.length-a.rows.length);
-
-  if(centerValue!==""){
-    $("centerStatsInfo").textContent="آمار مربوط به مرکز انتخاب‌شده";
-  }else{
-    $("centerStatsInfo").textContent="مقایسه مراکز بر اساس تعداد بازدید در بازه انتخابی";
-  }
-
-  $("centerStats").innerHTML=centerRows.length?centerRows.map((x,i)=>`
-    <tr>
-      <td>${toPersian(i+1)}</td>
-      <td>${escapeHtml(x.c[0]+" "+x.c[1])}</td>
-      <td><b>${toPersian(x.rows.length)}</b></td>
-      <td>${toPersian(x.rows.filter(r=>r.visitType==="ادواری").length)}</td>
-      <td>${toPersian(x.rows.filter(r=>r.visitType==="موردی").length)}</td>
-    </tr>
-  `).join(""):'<tr><td colspan="5">در این بازه گزارشی ثبت نشده است</td></tr>';
-
-  /* جزئیات مرکز */
-  if(centerValue===""){
-    $("selectedCenterStats").textContent="برای مشاهده جزئیات یک مرکز را از فهرست بالا انتخاب کن.";
-  }else{
-    const c=centers[Number(centerValue)];
-    const rows=list;
-    const camera=countEquipment(rows,"دوربین");
-    const alarm=countEquipment(rows,"دزدگیر");
-    const both=countEquipment(rows,"دوربین و دزدگیر");
-
-    $("selectedCenterStats").innerHTML=`
-      <b>${escapeHtml(c[0]+" "+c[1])}</b>
-      <br>کد مرکز: ${escapeHtml(c[2]||"بدون کد")}
-      <br>کل بازدیدها: ${toPersian(rows.length)}
-      <br>بازدید ادواری: ${toPersian(periodic)}
-      <br>بازدید موردی: ${toPersian(special)}
-      <br>دوربین: ${toPersian(camera)}
-      <br>دزدگیر: ${toPersian(alarm)}
-      <br>دوربین و دزدگیر: ${toPersian(both)}
-    `;
-  }
-}
-
-/* پشتیبان گیری و بازیابی */
-
-function exportBackup(){
-  const data={
-    app:"bank-mellat-reports",
-    version:4,
-    exportDate:new Date().toISOString(),
-    reports:reports
-  };
-
-  const blob=new Blob([JSON.stringify(data,null,2)],{type:"application/json"});
-  download(blob,"bank-mellat-backup.json");
-}
-
-function importBackup(){
-  const file=$("backupFile").files[0];
-  if(!file){alert("فایل پشتیبان را انتخاب کن.");return;}
-
-  if(!confirm("اطلاعات فعلی با اطلاعات فایل جایگزین می‌شود. ادامه می‌دهی؟"))return;
-
-  const reader=new FileReader();
-
-  reader.onload=function(){
-    try{
-      const data=JSON.parse(reader.result);
-      if(!data||!Array.isArray(data.reports))throw new Error("Invalid backup");
-
-      const oldReports=reports;
-      reports=data.reports.map(r=>({...r,date:normalizeDate(r.date)}));
-
-      if(!saveReportsToStorage()){
-        reports=oldReports;
-        return;
-      }
-
-      alert("بازیابی اطلاعات با موفقیت انجام شد.");
-      $("settingsReportCount").textContent=reports.length;
-      show("reports");
-      renderReports();
-    }catch(e){alert("فایل پشتیبان معتبر نیست.");}
-  };
-
-  reader.onerror=()=>alert("خواندن فایل با خطا مواجه شد.");
-  reader.readAsText(file);
-}
-
-function download(blob,name){
-  const a=document.createElement("a");
-  const url=URL.createObjectURL(blob);
-  a.href=url;
-  a.download=name;
-  document.body.appendChild(a);
-  a.click();
-  a.remove();
-  setTimeout(()=>URL.revokeObjectURL(url),2000);
-}
-
-/* تنظیمات */
-
-function saveSettings(){
-  const worker=$("defaultWorker").value.trim();
-  if(!worker){alert("نام ثبت‌کننده نمی‌تواند خالی باشد.");return;}
-
-  try{
-    localStorage.setItem(SETTINGS_KEY,JSON.stringify({worker:worker}));
-    $("worker").value=worker;
-    alert("تنظیمات ذخیره شد.");
-  }catch(e){alert("ذخیره تنظیمات انجام نشد.");}
-}
-
-/* چاپ گزارش آماری */
-window.addEventListener("beforeprint",()=>{
-  document.body.classList.add("print-stats");
-});
-window.addEventListener("afterprint",()=>{
-  document.body.classList.remove("print-stats");
-});
-
-/* شروع برنامه */
-
-function init(){
-  searchCenters();
-  fillChecks("cameraActivities",cam);
-  fillChecks("alarmActivities",alarm);
-  loadReports();
-  loadSettings();
-
-  $("visitDate").value=todayJalali();
-  $("centerCount").textContent=centers.length;
-
-  updateActivities();
-}
-
+function getReportCenterIndex(r){if(r.centerIndex!==undefined&&centers[Number(r.centerIndex)])return Number(r.centerIndex);return centers.findIndex(c=>normalizeText(c[1])===normalizeText(r.center||""))}
+function getReportJalaliParts(r){return parseJalali(normalizeDate(r.date||""))}
+function prepareStatistics(){const cur=parseJalali(todayJalali()),ys=new Set([cur.y]);reports.forEach(r=>{const p=getReportJalaliParts(r);if(p)ys.add(p.y)});$("statYear").innerHTML=[...ys].sort((a,b)=>b-a).map(y=>`<option value="${y}">${toPersian(y)}</option>`).join("");$("statYear").value=String(cur.y);$("statCenter").innerHTML='<option value="">همه مراکز</option>'+centers.map((c,i)=>`<option value="${i}">${escapeHtml(c[0]+" "+c[1])}${c[2]?" ـ کد "+escapeHtml(c[2]):""}</option>`).join("")}
+function openStatistics(){prepareStatistics();show("statistics");renderStatistics()}
+function resetStatistics(){$("statCenter").value="";$("statMonth").value="";$("statFrom").value="";$("statTo").value="";const cur=parseJalali(todayJalali());if([...$("statYear").options].some(o=>Number(o.value)===cur.y))$("statYear").value=String(cur.y);renderStatistics()}
+function getStatisticsReports(){const year=Number($("statYear").value),month=Number($("statMonth").value)||0,center=$("statCenter").value,from=normalizeDate($("statFrom").value),to=normalizeDate($("statTo").value);return sortReports(reports.filter(r=>{const p=getReportJalaliParts(r),d=normalizeDate(r.date||"");if(!p||p.y!==year)return false;if(month&&p.m!==month)return false;if(from&&d<from)return false;if(to&&d>to)return false;if(center!==""&&getReportCenterIndex(r)!==Number(center))return false;return true}))}
+function countEquipment(list,e){return list.filter(r=>(r.equipment||"")===e).length}
+function renderBarChart(id,items){const el=$(id);if(!items.length||!items.some(x=>x.value>0)){el.innerHTML='<div class="chart-empty">اطلاعاتی برای نمایش وجود ندارد</div>';return}const max=Math.max(1,...items.map(x=>x.value));el.innerHTML=items.map(x=>`<div class="chart-row"><div class="chart-label" title="${escapeHtml(x.label)}">${escapeHtml(x.label)}</div><div class="bar-track"><div class="bar-fill" style="width:${Math.max(x.value?2:0,x.value/max*100)}%"></div></div><div class="chart-value">${toPersian(x.value)}</div></div>`).join("")}
+function reportActivities(r){let a=Array.isArray(r.activities)?r.activities.slice():[];if(!a.length){a=[...(r.cameraActivities||[]),...(r.alarmActivities||[])];if(r.otherActivity&&!a.includes("سایر موارد: "+r.otherActivity))a.push("سایر موارد: "+r.otherActivity)}return a.length?a.join("، "):""}
+function renderStatistics(){if(!$("statYear").value)return;const year=Number($("statYear").value),month=Number($("statMonth").value)||0,center=$("statCenter").value,list=getStatisticsReports(),periodic=list.filter(r=>r.visitType==="ادواری").length,special=list.filter(r=>r.visitType==="موردی").length;const camN=countEquipment(list,"دوربین"),alarmN=countEquipment(list,"دزدگیر"),bothN=countEquipment(list,"دوربین و دزدگیر");$("statTotal").textContent=toPersian(list.length);$("statPeriodic").textContent=toPersian(periodic);$("statSpecial").textContent=toPersian(special);$("statCamera").textContent=toPersian(camN);$("statAlarm").textContent=toPersian(alarmN);$("statBoth").textContent=toPersian(bothN);
+let title="سال "+toPersian(year);if(month)title+=" ـ "+statMonths[month-1];if(center!==""){const c=centers[+center];if(c)title+=" ـ "+c[0]+" "+c[1]}if($("statFrom").value||$("statTo").value)title+=" ـ بازه "+($("statFrom").value?formatDate($("statFrom").value):"ابتدا") +" تا "+($("statTo").value?formatDate($("statTo").value):"انتها");$("statPeriodTitle").textContent="آمار "+title;
+/* ماهانه: همه ماه‌ها یا ماه انتخابی، با رعایت بازه تاریخ */
+const monthNums=month?[month]:Array.from({length:12},(_,i)=>i+1),monthlyRows=monthNums.map(m=>{const rows=list.filter(r=>{const p=getReportJalaliParts(r);return p&&p.m===m});return{m,rows}});$("monthlyStats").innerHTML=monthlyRows.map(x=>`<tr><td>${statMonths[x.m-1]}</td><td>${toPersian(x.rows.length)}</td><td>${toPersian(x.rows.filter(r=>r.visitType==="ادواری").length)}</td><td>${toPersian(x.rows.filter(r=>r.visitType==="موردی").length)}</td></tr>`).join("")||'<tr><td colspan="4">اطلاعاتی وجود ندارد</td></tr>';renderBarChart("monthlyChart",monthlyRows.map(x=>({label:statMonths[x.m-1],value:x.rows.length})));
+let centerRows=centers.map((c,i)=>({c,index:i,rows:list.filter(r=>getReportCenterIndex(r)===i)})).filter(x=>x.rows.length).sort((a,b)=>b.rows.length-a.rows.length);$("centerStatsInfo").textContent=center===""?"مقایسه مراکز بر اساس فیلترهای انتخاب‌شده":"آمار مربوط به مرکز انتخاب‌شده";$("centerStats").innerHTML=centerRows.length?centerRows.map((x,i)=>`<tr><td>${toPersian(i+1)}</td><td>${escapeHtml(x.c[0]+" "+x.c[1])}</td><td><b>${toPersian(x.rows.length)}</b></td><td>${toPersian(x.rows.filter(r=>r.visitType==="ادواری").length)}</td><td>${toPersian(x.rows.filter(r=>r.visitType==="موردی").length)}</td></tr>`).join(""):'<tr><td colspan="5">در این بازه گزارشی ثبت نشده است</td></tr>';
+renderBarChart("centerChart",centerRows.slice(0,15).map(x=>({label:x.c[0]+" "+x.c[1],value:x.rows.length})));renderBarChart("typeChart",[{label:"ادواری",value:periodic},{label:"موردی",value:special}]);renderBarChart("equipmentChart",[{label:"دوربین",value:camN},{label:"دزدگیر",value:alarmN},{label:"دوربین و دزدگیر",value:bothN}]);
+if(center===""){$("selectedCenterStats").textContent="برای مشاهده جزئیات یک مرکز را از فهرست بالا انتخاب کن.";$("selectedCenterReports").innerHTML=""}else{const c=centers[+center];$("selectedCenterStats").innerHTML=`<b>${escapeHtml(c[0]+" "+c[1])}</b><br>کد مرکز: ${escapeHtml(c[2]||"بدون کد")}<br>کل بازدیدها: ${toPersian(list.length)}<br>بازدید ادواری: ${toPersian(periodic)}<br>بازدید موردی: ${toPersian(special)}<br>دوربین: ${toPersian(camN)}<br>دزدگیر: ${toPersian(alarmN)}<br>دوربین و دزدگیر: ${toPersian(bothN)}`;$("selectedCenterReports").innerHTML=list.map((r,i)=>`<div class="detail-row"><strong>${toPersian(i+1)}. ${escapeHtml(formatDate(r.date))} ـ ${escapeHtml(r.visitType||"نامشخص")}</strong><div class="detail-meta">${escapeHtml(r.equipment||"")}${r.worker?" ـ ثبت‌کننده: "+escapeHtml(r.worker):""}</div>${reportActivities(r)?`<div class="detail-activities">فعالیت‌ها: ${escapeHtml(reportActivities(r))}</div>`:""}${r.expert?`<div class="detail-meta">کارشناس: ${escapeHtml(r.expert)}</div>`:""}${r.notes?`<div class="detail-activities">توضیحات: ${escapeHtml(r.notes)}</div>`:""}<details><summary>متن کامل گزارش</summary><pre>${escapeHtml(r.text||"")}</pre></details></div>`).join("")||'<div class="empty">برای این مرکز در فیلتر انتخاب‌شده گزارشی وجود ندارد.</div>'}}
+function csvCell(v){return '"'+String(v??"").replace(/"/g,'""').replace(/\r?\n/g," ")+'"'}
+function exportStatisticsCSV(filtered){const list=filtered?getStatisticsReports():sortReports(reports);if(!list.length){alert("گزارشی برای خروجی وجود ندارد.");return}const rows=[["ردیف","تاریخ شمسی","نام ثبت‌کننده","نوع مرکز","نام مرکز","کد مرکز","نوع مراجعه","تجهیزات","فعالیت‌ها","کارشناس","توضیحات"]];list.forEach((r,i)=>rows.push([i+1,formatDate(r.date),r.worker||"",r.centerType||"",r.center||"",r.centerCode||"",r.visitType||"",r.equipment||"",reportActivities(r),r.expert||"",r.notes||""]));const csv="\uFEFF"+rows.map(row=>row.map(csvCell).join(",")).join("\r\n"),blob=new Blob([csv],{type:"text/csv;charset=utf-8;"});let suffix="all";if(filtered){const y=$("statYear").value||"filtered";suffix="filtered-"+y}download(blob,"bank-mellat-reports-"+suffix+".csv")}
+function exportBackup(){const data={app:"bank-mellat-reports",version:4,exportDate:new Date().toISOString(),reports};download(new Blob([JSON.stringify(data,null,2)],{type:"application/json"}),"bank-mellat-backup.json")}
+function importBackup(){const f=$("backupFile").files[0];if(!f){alert("فایل پشتیبان را انتخاب کن.");return}if(!confirm("اطلاعات فعلی با اطلاعات فایل جایگزین می‌شود. ادامه می‌دهی؟"))return;const rd=new FileReader();rd.onload=()=>{try{const d=JSON.parse(rd.result);if(!d||!Array.isArray(d.reports))throw Error("Invalid backup");const old=reports;reports=d.reports.map(r=>({...r,date:normalizeDate(r.date)}));if(!saveReportsToStorage()){reports=old;return}alert("بازیابی اطلاعات با موفقیت انجام شد.");$("settingsReportCount").textContent=reports.length;show("reports");renderReports()}catch(e){alert("فایل پشتیبان معتبر نیست.")}};rd.onerror=()=>alert("خواندن فایل با خطا مواجه شد.");rd.readAsText(f)}
+function download(blob,name){const a=document.createElement("a"),url=URL.createObjectURL(blob);a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),2000)}
+function saveSettings(){const w=$("defaultWorker").value.trim();if(!w){alert("نام ثبت‌کننده نمی‌تواند خالی باشد.");return}try{localStorage.setItem(SETTINGS_KEY,JSON.stringify({worker:w}));$("worker").value=w;alert("تنظیمات ذخیره شد.")}catch(e){alert("ذخیره تنظیمات انجام نشد.")}}
+window.addEventListener("beforeprint",()=>document.body.classList.add("print-stats"));window.addEventListener("afterprint",()=>document.body.classList.remove("print-stats"));
+function init(){searchCenters();fillChecks("cameraActivities",cam);fillChecks("alarmActivities",alarm);loadReports();loadSettings();$("visitDate").value=todayJalali();$("centerCount").textContent=centers.length;updateActivities()}
 init();
-
-if("serviceWorker" in navigator){
-  window.addEventListener("load",()=>{
-    navigator.serviceWorker.register("./sw.js")
-      .catch(error=>console.log("Service Worker:",error));
-  });
-}
+if("serviceWorker"in navigator)window.addEventListener("load",()=>navigator.serviceWorker.register("./sw.js").catch(e=>console.log("Service Worker:",e)));
 </script>
 </body>
 </html>
