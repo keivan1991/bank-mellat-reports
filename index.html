@@ -8,82 +8,51 @@
 <title>گزارش بازدید بانک ملت</title>
 <link rel="manifest" href="./manifest.json">
 <link rel="icon" href="./icon.svg" type="image/svg+xml">
-
 <style>
 *{box-sizing:border-box}
-body{
- margin:0;background:#f5f6f8;color:#20242b;
- font-family:Tahoma,sans-serif;font-size:15px;line-height:1.8
-}
-header{
- background:white;border-bottom:1px solid #ddd;
- padding:16px;position:sticky;top:0;z-index:2
-}
+body{margin:0;background:#f5f6f8;color:#20242b;font-family:Tahoma,sans-serif;font-size:15px;line-height:1.8}
+header{background:white;border-bottom:1px solid #ddd;padding:16px;position:sticky;top:0;z-index:2}
 h1{font-size:19px;margin:0}
 main{max-width:680px;margin:auto;padding:15px}
-.card{
- background:white;border:1px solid #e1e5ea;
- border-radius:12px;padding:15px;margin-bottom:13px
-}
+.card{background:white;border:1px solid #e1e5ea;border-radius:12px;padding:15px;margin-bottom:13px}
 h2{font-size:16px;margin:0 0 12px}
-button{
- font:inherit;border:1px solid #ddd;background:white;
- border-radius:9px;padding:10px 13px;cursor:pointer
-}
+button{font:inherit;border:1px solid #ddd;background:white;border-radius:9px;padding:10px 13px;cursor:pointer}
 .primary{background:#245da8;color:white;border-color:#245da8}
 .green{background:#18794e;color:white;border-color:#18794e}
 .danger{color:#b42318}
 .menu{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 label{display:block;font-weight:bold;margin:10px 0 5px}
-input,select,textarea{
- width:100%;font:inherit;padding:10px;
- border:1px solid #cbd2da;border-radius:8px;background:white
-}
+input,select,textarea{width:100%;font:inherit;padding:10px;border:1px solid #cbd2da;border-radius:8px;background:white}
 textarea{min-height:75px}
 .row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .checks{display:grid;grid-template-columns:1fr 1fr;gap:7px}
-.check{
- display:flex;align-items:center;gap:7px;
- border:1px solid #ddd;border-radius:8px;padding:7px;
- font-weight:normal;margin:0
-}
+.check{display:flex;align-items:center;gap:7px;border:1px solid #ddd;border-radius:8px;padding:7px;font-weight:normal;margin:0}
 .check input{width:auto}
 .actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:13px}
 .hidden{display:none!important}
 .muted{color:#68717d;font-size:13px}
-.report{
- white-space:pre-wrap;background:#fafafa;
- border:1px dashed #ccc;border-radius:8px;padding:12px
-}
+.report{white-space:pre-wrap;background:#fafafa;border:1px dashed #ccc;border-radius:8px;padding:12px}
 .item{border-bottom:1px solid #ddd;padding:10px 0}
 footer{text-align:center;color:#777;font-size:12px;padding:15px}
-@media(max-width:390px){
- .row,.menu{grid-template-columns:1fr}
-}
+@media(max-width:390px){.row,.menu{grid-template-columns:1fr}}
 </style>
 </head>
-
 <body>
-
 <header>
 <h1>گزارش بازدید مراکز بانک ملت</h1>
-<small>نسخه اولیه ـ ذخیره اطلاعات روی گوشی</small>
+<small>ثبت و نگهداری گزارش بازدید</small>
 </header>
-
 <main>
 
 <section id="home" class="card">
 <h2>منوی اصلی</h2>
 <div class="menu">
-<button class="primary" onclick="show('form')">ثبت گزارش</button>
+<button class="primary" onclick="newReport()">ثبت گزارش</button>
 <button onclick="show('reports');renderReports()">مشاهده گزارش‌ها</button>
 <button onclick="show('backup')">پشتیبان‌گیری و بازیابی</button>
 <button onclick="show('settings')">تنظیمات</button>
 </div>
-<p class="muted">
-اطلاعات در حافظه همین مرورگر ذخیره می‌شود.
-مرتب از اطلاعات خود پشتیبان بگیرید.
-</p>
+<p class="muted">اطلاعات در حافظه همین مرورگر ذخیره می‌شود. مرتب پشتیبان بگیرید.</p>
 </section>
 
 <section id="form" class="card hidden">
@@ -107,7 +76,7 @@ footer{text-align:center;color:#777;font-size:12px;padding:15px}
 <div class="row">
 <div>
 <label>نوع مراجعه</label>
-<select id="visitType">
+<select id="visitType" onchange="updateActivities()">
 <option>ادواری</option>
 <option>موردی</option>
 </select>
@@ -122,39 +91,33 @@ footer{text-align:center;color:#777;font-size:12px;padding:15px}
 </div>
 </div>
 
+<div id="activityArea">
 <div id="cameraBlock">
 <label>فعالیت‌های دوربین</label>
 <div id="cameraActivities" class="checks"></div>
 </div>
-
 <div id="alarmBlock">
 <label>فعالیت‌های دزدگیر</label>
 <div id="alarmActivities" class="checks"></div>
 </div>
-
-<label>عنوان فعالیت سایر موارد</label>
+<label id="otherLabel">عنوان فعالیت سایر موارد</label>
 <input id="otherActivity" placeholder="عنوان فعالیت جدید">
+</div>
 
 <label>توضیحات تکمیلی</label>
 <textarea id="notes"></textarea>
 
 <div id="expertBlock">
-<h2>اطلاعات کارشناس دوربین</h2>
-<label>کارشناس</label>
+<h2>کارشناس دوربین</h2>
+<label>انتخاب کارشناس</label>
 <select id="expert" onchange="toggleOtherExpert()">
-<option>آقای یادگار</option>
-<option>آقای متقی</option>
-<option>آقای نظری</option>
-<option>آقای محمدی</option>
-<option value="other">ورود دستی نام کارشناس دیگر</option>
+<option value="یادگار">یادگار</option>
+<option value="متقی">متقی</option>
+<option value="نظری">نظری</option>
+<option value="محمدی">محمدی</option>
+<option value="other">نام دیگر</option>
 </select>
 <input id="otherExpert" class="hidden" placeholder="نام کارشناس">
-
-<label>وضعیت تأیید</label>
-<select id="approval">
-<option>با تأیید کارشناس</option>
-<option>بدون تأیید کارشناس</option>
-</select>
 </div>
 
 <div class="actions">
@@ -183,10 +146,8 @@ footer{text-align:center;color:#777;font-size:12px;padding:15px}
 <h2>پشتیبان‌گیری و بازیابی</h2>
 <p class="muted">برای بازیابی، فایل JSON پشتیبان را انتخاب کن.</p>
 <button class="primary" onclick="exportBackup()">دریافت پشتیبان JSON</button>
-
 <label>انتخاب فایل پشتیبان</label>
 <input type="file" id="backupFile" accept=".json,application/json">
-
 <div class="actions">
 <button class="danger" onclick="importBackup()">بازیابی اطلاعات</button>
 <button onclick="show('home')">بازگشت</button>
@@ -196,13 +157,11 @@ footer{text-align:center;color:#777;font-size:12px;padding:15px}
 <section id="settings" class="card hidden">
 <h2>تنظیمات</h2>
 <p>تعداد مراکز تعریف‌شده: <b id="centerCount"></b></p>
-<p class="muted">
-مدیریت مراکز، کارشناسان و فاصله بازدیدها در نسخه‌های بعدی اضافه می‌شود.
-</p>
+<p class="muted">مدیریت مراکز و تنظیمات بازدید در نسخه‌های بعدی تکمیل می‌شود.</p>
 <button onclick="show('home')">بازگشت</button>
 </section>
 
-<footer>گزارش بازدید بانک ملت ـ نسخه اولیه</footer>
+<footer>گزارش بازدید بانک ملت</footer>
 </main>
 
 <script>
@@ -254,16 +213,8 @@ const centers=[
 ["سرپرستی","سرپرستی آذربایجان شرقی",""]
 ];
 
-const cam=[
-"درخواست فیلم","خرابی دوربین","تعویض دوربین",
-"نصب دوربین","تعویض سرور","کلین سرور",
-"ریکاوری سرور","سایر موارد"
-];
-
-const alarm=[
-"نقص پدال","نقص آژیر","تعویض باتری",
-"نصب پدال","تعویض چشمی","سایر موارد"
-];
+const cam=["درخواست فیلم","خرابی دوربین","تعویض دوربین","نصب دوربین","تعویض سرور","کلین سرور","ریکاوری سرور","سایر موارد"];
+const alarm=["نقص پدال","نقص آژیر","تعویض باتری","نصب پدال","تعویض چشمی","سایر موارد"];
 
 let reports=JSON.parse(localStorage.getItem("bm_reports")||"[]");
 let draft="";
@@ -276,32 +227,53 @@ $(id).classList.remove("hidden");
 
 function fillChecks(id,list){
 $(id).innerHTML=list.map(x=>
-`<label class="check">
-<input type="checkbox" value="${x}">${x}
-</label>`).join("");
+`<label class="check"><input type="checkbox" value="${x}">${x}</label>`
+).join("");
 }
 
 function init(){
 $("center").innerHTML=centers.map((c,i)=>
 `<option value="${i}">${c[0]} ${c[1]}${c[2]?" ـ کد "+c[2]:""}</option>`
 ).join("");
-
 fillChecks("cameraActivities",cam);
 fillChecks("alarmActivities",alarm);
-
 $("visitDate").value=new Date().toISOString().slice(0,10);
 $("centerCount").textContent=centers.length;
+updateActivities();
+}
 
+function newReport(){
+resetForm();
+show("form");
+}
+
+function resetForm(){
+$("editId").value="";
+$("visitDate").value=new Date().toISOString().slice(0,10);
+$("worker").value="کیوان اسمعیل پور";
+$("center").value="0";
+$("visitType").value="ادواری";
+$("equipment").value="دوربین";
+$("notes").value="";
+$("otherActivity").value="";
+$("expert").value="یادگار";
+$("otherExpert").value="";
+document.querySelectorAll(".checks input").forEach(x=>x.checked=false);
+toggleOtherExpert();
 updateActivities();
 }
 
 function updateActivities(){
-let e=$("equipment").value;
-let camera=e.includes("دوربین");
-let alarm=e.includes("دزدگیر");
+let periodic=$("visitType").value==="ادواری";
+let equipment=$("equipment").value;
+let camera=equipment.includes("دوربین");
+let alarm=equipment.includes("دزدگیر");
 
+$("activityArea").classList.toggle("hidden",periodic);
 $("cameraBlock").classList.toggle("hidden",!camera);
 $("alarmBlock").classList.toggle("hidden",!alarm);
+$("otherLabel").classList.toggle("hidden",periodic);
+$("otherActivity").classList.toggle("hidden",periodic);
 $("expertBlock").classList.toggle("hidden",!camera);
 }
 
@@ -315,56 +287,54 @@ return [...document.querySelectorAll("#"+id+" input:checked")].map(x=>x.value);
 
 function previewReport(){
 let c=centers[+$("center").value];
+let rawDate=$("visitDate").value;
+if(!rawDate){alert("تاریخ مراجعه را وارد کن.");return;}
+
 let date=new Intl.DateTimeFormat("fa-IR-u-ca-persian",{
 year:"numeric",month:"2-digit",day:"2-digit"
-}).format(new Date($("visitDate").value+"T12:00:00"));
+}).format(new Date(rawDate+"T12:00:00"));
 
 let equipment=$("equipment").value;
+let periodic=$("visitType").value==="ادواری";
 let activities=[];
 
-if(equipment.includes("دوربین")){
-activities.push(...selected("cameraActivities"));
-}
-
-if(equipment.includes("دزدگیر")){
-activities.push(...selected("alarmActivities"));
-}
+if(!periodic){
+if(equipment.includes("دوربین"))activities.push(...selected("cameraActivities"));
+if(equipment.includes("دزدگیر"))activities.push(...selected("alarmActivities"));
 
 if(!activities.length){
-alert("حداقل یک فعالیت انتخاب کن.");
+alert("برای مراجعه موردی حداقل یک فعالیت انتخاب کن.");
 return;
 }
 
 if(activities.includes("سایر موارد")){
 let other=$("otherActivity").value.trim();
-if(!other){
-alert("عنوان فعالیت سایر موارد را وارد کن.");
-return;
-}
+if(!other){alert("عنوان فعالیت سایر موارد را وارد کن.");return;}
 activities=activities.filter(x=>x!=="سایر موارد");
 activities.push("سایر موارد: "+other);
+}
 }
 
 let lines=[
 date+"؛",
-$("worker").value,
+$("worker").value.trim(),
 c[2]||"بدون کد",
 c[0]+" "+c[1],
-$("visitType").value+" "+equipment,
-activities.join("، ")
+(periodic?"ادواری ":"موردی ")+equipment
 ];
+
+if(!periodic)lines.push(activities.join("، "));
 
 if(equipment.includes("دوربین")){
 let expert=$("expert").value==="other"
-?$("otherExpert").value
+?$("otherExpert").value.trim()
 :$("expert").value;
 
-lines.push("کارشناس: "+expert+"؛ "+$("approval").value);
+if(!expert){alert("نام کارشناس را وارد کن.");return;}
+lines.push("تایید توسط آقای "+expert);
 }
 
-if($("notes").value.trim()){
-lines.push("توضیحات: "+$("notes").value.trim());
-}
+if($("notes").value.trim())lines.push("توضیحات: "+$("notes").value.trim());
 
 draft=lines.join("\n");
 $("previewText").textContent=draft;
@@ -375,13 +345,116 @@ async function copyReport(){
 try{
 await navigator.clipboard.writeText(draft);
 alert("گزارش کپی شد.");
-}catch(e){
-alert("کپی خودکار ممکن نشد؛ متن پیش‌نمایش را انتخاب و کپی کن.");
-}
+}catch(e){alert("کپی خودکار ممکن نشد؛ متن را دستی انتخاب و کپی کن.");}
 }
 
 function saveReport(){
 let id=$("editId").value||String(Date.now());
+let c=centers[+$("center").value];
+let obj={
+id:id,
+text:draft,
+date:$("visitDate").value,
+center:c[1],
+centerType:c[0],
+equipment:$("equipment").value,
+visitType:$("visitType").value
+};
+let i=reports.findIndex(x=>x.id===id);
+if(i>=0)reports[i]=obj;
+else reports.push(obj);
+localStorage.setItem("bm_reports",JSON.stringify(reports));
+$("editId").value="";
+alert("گزارش ذخیره شد.");
+show("reports");
+renderReports();
+}
+
+function renderReports(){
+$("reportList").innerHTML=reports.length?
+reports.slice().reverse().map(r=>`
+<div class="item">
+<b>${r.centerType} ${r.center}</b>
+<div class="muted">${r.date} ـ ${r.visitType} ـ ${r.equipment}</div>
+<div class="actions">
+<button onclick="copySaved('${r.id}')">کپی</button>
+<button onclick="editReport('${r.id}')">ویرایش</button>
+<button class="danger" onclick="deleteReport('${r.id}')">حذف</button>
+</div>
+<details><summary>مشاهده متن گزارش</summary><pre>${escapeHtml(r.text)}</pre></details>
+</div>`).join("")
+:"<p class='muted'>هنوز گزارشی ثبت نشده است.</p>";
+}
+
+function escapeHtml(s){
+return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+}
+
+async function copySaved(id){
+let r=reports.find(x=>x.id===id);
+try{await navigator.clipboard.writeText(r.text);alert("کپی شد.");}
+catch(e){alert(r.text);}
+}
+
+function editReport(id){
+let r=reports.find(x=>x.id===id);
+if(!r)return;
+alert("ویرایش مستقیم گزارش‌های قبلی در این نسخه از طریق ثبت گزارش جدید انجام می‌شود. متن قبلی در سوابق باقی می‌ماند.");
+}
+
+function deleteReport(id){
+if(confirm("گزارش حذف شود؟")){
+reports=reports.filter(x=>x.id!==id);
+localStorage.setItem("bm_reports",JSON.stringify(reports));
+renderReports();
+}
+}
+
+function exportBackup(){
+let data={app:"bank-mellat-reports",version:1,reports:reports};
+let blob=new Blob([JSON.stringify(data,null,2)],{type:"application/json"});
+download(blob,"bank-mellat-backup.json");
+}
+
+function importBackup(){
+let file=$("backupFile").files[0];
+if(!file){alert("فایل پشتیبان را انتخاب کن.");return;}
+if(!confirm("اطلاعات فعلی با اطلاعات فایل جایگزین می‌شود. ادامه می‌دهی؟"))return;
+let reader=new FileReader();
+reader.onload=function(){
+try{
+let data=JSON.parse(reader.result);
+if(!Array.isArray(data.reports))throw Error();
+reports=data.reports;
+localStorage.setItem("bm_reports",JSON.stringify(reports));
+alert("بازیابی انجام شد.");
+renderReports();
+show("reports");
+}catch(e){alert("فایل پشتیبان معتبر نیست.");}
+};
+reader.readAsText(file);
+}
+
+function download(blob,name){
+let a=document.createElement("a");
+let url=URL.createObjectURL(blob);
+a.href=url;a.download=name;a.click();
+setTimeout(()=>URL.revokeObjectURL(url),1500);
+}
+
+init();
+
+if("serviceWorker" in navigator){
+window.addEventListener("load",()=>{
+navigator.serviceWorker.register("./sw.js")
+.then(()=>console.log("Offline ready"))
+.catch(error=>console.log(error));
+});
+}
+</script>
+</body>
+</html>
+").value||String(Date.now());
 let c=centers[+$("center").value];
 
 let obj={
